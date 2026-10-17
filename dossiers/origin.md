@@ -85,9 +85,10 @@ Subsystem plan:
 - **Import mapping + fitting provenance:** LabPlot's import layer.
 - **Numerics:** LabPlot (and liborigin consumers) use **GSL**; match Origin
   NLFit behavior against it rather than rebuilding solvers.
-- **Graphing gap:** LabPlot's modern line appears **2D-only** (SciDAVis retains
-  3D) — HYPOTHESIS-high; if Origin 3D/surface parity is in scope it's a separate
-  large effort.
+- **Graphing:** **2D-first (decided 2026-10-16).** LabPlot's modern line is
+  2D-only; start with 2D parity, which covers most Origin workflows. 3D/surface
+  parity is a separate later workstream — if prioritized, SciDAVis's retained 3D
+  is a reference point.
 
 ## F. Verification & release strategy
 
@@ -131,9 +132,12 @@ none unless noted; this is the starting state.
   runner; machine-readable + screenshot recorder; artifact manifest linking
   every output to its run.
 
-**Consequence:** fixture generation and format round-tripping need no license;
-**behavioral/computation ground truth does.** Securing a lawfully licensed
-Origin (and `originpro`) is the gating dependency for C4/C5 verification.
+**Decision (2026-10-16): no-license tier now.** Fixture generation and
+format round-tripping proceed without a license; the licensed tier (C4/C5
+computed ground truth via `originpro`) is **deferred** until a lawful Origin is
+available. Note: even the no-license tier needs a Windows host to run Orglab
+(COM), so in-sandbox work is limited to the liborigin fork, the `.ksy`, and the
+harness scripts the VM will run.
 
 ## Legal preconditions
 
@@ -152,7 +156,7 @@ See `../docs/legal-basis.md`.
 | O-2 | Run LabPlot's liborigin fork against the fixtures; map where OPJU parsing breaks | C2 | break map vs fixtures | not started |
 | O-3 | OPJU reader module in the liborigin fork (data+structure) | C2 | value/object equivalence vs Orglab fixtures | not started |
 | O-4 | Fitting-provenance import (operation tree) | C4/C5 | reopened project recomputes | not started |
-| O-5 | One NLFit differential test vs licensed Origin | C4 | numeric match within tol | blocked on license |
+| O-5 | One NLFit differential test vs licensed Origin | C4 | numeric match within tol | deferred (no-license tier chosen 2026-10-16) |
 
 ## Open questions / blockers (ranked)
 
