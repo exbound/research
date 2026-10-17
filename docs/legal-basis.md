@@ -1,9 +1,29 @@
-# Legal basis for format liberation and interoperability
+# Legal basis for compatible reconstruction
 
-A plain-language summary of why reading your own data out of a proprietary
-format, and reverse-engineering a format or protocol for interoperability, is
-broadly protected. This is a researched synthesis for orientation, not legal
-advice; specifics vary by jurisdiction and facts.
+A plain-language orientation to why building independent, *compatible*
+reimplementations of proprietary scientific software — and reading one's own
+data out of proprietary formats — is generally defensible, and where the limits
+are. This is a researched synthesis, **not legal advice**: the supporting case
+law is largely US, some of it is contested or circuit-dependent, other
+jurisdictions differ, and outcomes turn on specific facts. Treat everything
+below as orientation to verify with counsel per target and jurisdiction, not as
+settled rules.
+
+The analysis keeps distinct things apart, because they carry very different
+risk:
+
+- **Data formats** — reading/parsing lawfully-held files: lowest risk
+  (functional facts, not expression).
+- **Behavioral compatibility** — matching what the software does (commands,
+  results): supported by the interoperability/API case law, with limits.
+- **Functional specifications** — documenting observed behavior as a spec:
+  fact-finding.
+- **Original implementations** — independently written code (clean-room defends
+  copyright, not patents).
+- **Vendor binaries & expressive assets** — compiled code, UI artwork, icons,
+  help content: protected; never copied or redistributed.
+
+Each section notes which of these it concerns.
 
 ## Formats are functional facts
 

@@ -9,7 +9,8 @@
 - **One-line objective:** an independent Origin-*compatible* scientific data
   analysis & plotting environment, reached by verifiable subsystems — native
   project compatibility first, then numerics, provenance, graphing, scripting.
-- **Implementation repo:** `opju` · **Strategy:** extend LabPlot (see §E).
+- **Implementation:** a separate implementation repository · **Strategy:**
+  extend LabPlot (see §E).
 
 ## A. Product & version archaeology — ESTABLISHED
 
@@ -99,7 +100,10 @@ differential result. Land them upstream in LabPlot where they ship.
 
 ## Capability coverage matrix (current)
 
-none unless noted; this is the starting state.
+Recorded independently (the coverage triplet); none unless noted. `full` /
+`partial` / `none` are completion metrics only alongside an enumerated feature
+inventory, which does not exist yet — so treat these as a coverage sketch, not a
+percentage.
 
 | Capability | Reference (observed?) | Implementation | Verification |
 |------------|----------------------|----------------|--------------|
@@ -110,7 +114,7 @@ none unless noted; this is the starting state.
 | C5 Workflow semantics (Recalculate) | none | none | none |
 | C6 Programmability (LabTalk/Origin C/Python) | documented, not characterized | none | none |
 | C7 Instrument integration | n/a (Origin is not instrument-bound) | n/a | n/a |
-| C8 User-facing application | n/a — LabPlot provides the interface | reuse LabPlot | n/a |
+| C8 User-facing application | none observed (Origin UI behavior) | reused (LabPlot) | outstanding — Origin-compat not shown |
 | C9 Replacement coverage | not yet measurable | — | — |
 
 ## Reference environment — the critical design, split by license boundary

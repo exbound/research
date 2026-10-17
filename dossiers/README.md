@@ -26,6 +26,17 @@ is tracked there.
 | 11 | Renishaw WiRE | Raman acquisition formats, mapping, corrections, spectral analysis | Independent Raman spectroscopy + mapping environment |
 | 12 | HORIBA LabSpec | Acquisition metadata, map operations, processing, calibration | Independent Raman processing + compatible instrument workflows |
 
+## Dossier status
+
+Honest labels: an invisible campaign and a fabricated-complete one are both
+failures. A dossier exists only where there are real findings; the rest are
+marked awaiting research and are not pre-filled with generated summaries.
+
+- **#4 OriginPro** — [`origin.md`](origin.md) · research in progress (the worked
+  example).
+- **#1–3, #5–12** — awaiting research; no dossier yet. Each will be created from
+  `TEMPLATE.md` when it has verified findings, not before.
+
 ## Shared vs. per-target
 
 Build **per-application** compatibility implementations (native document/project
