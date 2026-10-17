@@ -35,6 +35,32 @@ devices. The Software Preservation Network and Library Copyright Alliance are
 the organized proponents; right-to-repair reinforces the same "access to
 maintain your own tools" principle.
 
+## Reimplementing the application, not just the format
+
+Reconstructing an independent, compatible application extends the same
+functional-facts principle:
+
+- **Behavior, command sets, and interfaces are not protected expression.**
+  *Lotus v. Borland* (1st Cir. 1996, aff'd by an equally divided Supreme Court)
+  held a menu-command hierarchy an uncopyrightable "method of operation."
+  *Google v. Oracle* (2021) held reimplementing an API's declaring code for a
+  new, compatible implementation to be fair use. With Sega/Connectix, this
+  supports independently reimplementing *what the software does*.
+- **What stays protected:** the vendor's actual code, and expressive elements —
+  UI artwork, icons, chrome, help text, sample content. Reimplement behavior;
+  never copy expression.
+- **Trademarks are separate from copyright.** Product and company names and
+  logos are marks. Describe compatibility nominatively ("reads OriginPro
+  projects," "<vendor>-compatible"); do not name the implementation after the
+  product or use its branding.
+- **Observation requires a lawful license.** Running the reference software to
+  observe its behavior is the EU Art. 5(3) right / US fair-use territory, but it
+  presupposes a lawfully licensed copy and is not a license to redistribute the
+  vendor's binaries.
+- **Patents still bind.** A patented algorithm or workflow can read on an
+  independent implementation regardless of clean-room copyright hygiene. Check
+  per target before implementing.
+
 ## The line this project holds
 
 - **In scope:** parsing lawfully held data files, reverse-engineering formats and

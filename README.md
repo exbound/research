@@ -1,70 +1,87 @@
-# Scientific data & format liberation
+# Exbound — scientific software reconstruction
 
-Open readers, recovered provenance, and reproducibility for scientific and
-engineering data held in proprietary or abandoned file formats.
+Independent, open, *compatible* reimplementations of proprietary scientific and
+engineering software — applications that can open, edit, compute, fit, graph,
+script, save, and execute the originals' important workflows without the
+vendor's software installed.
 
-## The problem
+Recovering data out of proprietary files is one subsystem of this, not the
+goal.
 
-Research data is routinely trapped in vendor file formats and instrument-bound
-software. When the software is discontinued, licensed only at high cost, or
-simply undocumented, the data — and the ability to reproduce the result that
-produced it — becomes inaccessible. This directly blocks the Accessible,
-Interoperable, and Reusable pillars of the [FAIR principles](https://www.go-fair.org/fair-principles/),
-and it is a recognized driver of the reproducibility problem: the Datatractor
-work ([Evans et al., 2024](https://arxiv.org/abs/2410.18839)) frames the same
-issue — proprietary formats that require reverse engineering and that shift
-between software versions.
+## The principle
 
-## Two contributions
+> Complete compatible functionality is the long-term objective; independently
+> verifiable subsystems are how we get there.
 
-Most popular scientific formats already have mature open readers (see
-[`docs/landscape.md`](docs/landscape.md)). Re-implementing those adds little.
-The useful work is narrower:
+The proprietary application is the **behavioral reference, not the architectural
+blueprint.** Where a mature open engine already implements the underlying
+science, we build on it and match the vendor's behavior rather than rebuild it.
+See [`docs/capability-model.md`](docs/capability-model.md) for the C1–C9
+capability model and the reference/implementation/verification coverage triplet
+that keeps "a parser exists" from ever reading as "the target is done."
 
-1. **A map of what is and isn't liberated** — per-format, which open tool reads
-   it, how completely, and what it drops. Kept current, with evidence.
-2. **The provenance / reproducibility layer** — most open readers recover the
-   *data* but discard the *method*: the processing defaults, calibration, and
-   analysis steps the vendor software applied silently. Recovering and measuring
-   that is the higher-value, under-addressed contribution. See
-   [`docs/reproducibility.md`](docs/reproducibility.md).
+## How the work is organized
 
-The concrete artifact we aim to own is a **benchmark corpus of
-format-decoding tasks** — paired (sample file + ground-truth decoded output +
-notes) with difficulty labels — which existing readers and registries can be
-scored against. No such corpus exists today.
+- [`docs/capability-model.md`](docs/capability-model.md) — the C1–C9 model,
+  coverage triplet, and the definition of "done."
+- [`docs/legal-basis.md`](docs/legal-basis.md) — why independent
+  compatible reimplementation is defensible, and the boundaries it must hold.
+- [`dossiers/TEMPLATE.md`](dossiers/TEMPLATE.md) — the per-target research
+  dossier structure (version archaeology → binary inventory → functional
+  inventory → behavioral spec → reconstruction architecture → verification),
+  plus the capability matrix and reference-environment spec.
+- `dossiers/<target>.md` — one evidence-backed dossier per reconstruction
+  target (the campaign; see the target inventory).
+- [`docs/reproducibility.md`](docs/reproducibility.md) and
+  [`docs/landscape.md`](docs/landscape.md) — the format & provenance
+  liberation subprogram: existing open readers to build on, and the
+  undocumented-defaults reproducibility problem that feeds C2–C4.
+
+A dossier is a research record. The engineering specification (what the
+independent software must implement, and how compatibility is measured) and the
+contributor setup guide are kept as separate documents, so a contributor need
+not infer requirements from a research diary.
+
+## Targets
+
+The campaign is a set of target-level reconstruction programs, each analyzed
+across the full C1–C9 model — not a list of file converters. The inventory and
+per-target dossiers live in `dossiers/`. (Being populated; see status in each.)
+
+## Scope and boundaries
+
+Independent reimplementation for **compatibility** is defensible — reimplementing
+functionality, commands, and interfaces is supported by the interoperability and
+API-reimplementation case law (see `docs/legal-basis.md`). The boundaries this
+project holds:
+
+- Reference software is run only under a **lawful license**, with provenance
+  recorded.
+- Any reimplementation derived from a proprietary original uses a **clean-room**
+  wall.
+- **No copying of expressive elements** — UI chrome, icons, artwork, code — and
+  **no vendor trademarks**: implementations are "<vendor>-compatible," never the
+  product's name.
+- We do not defeat DRM/dongle/activation on current software to enable
+  unlicensed use, and we do not distribute circumvention tools.
 
 ## Positioning
 
-This complements, rather than duplicates, the existing ecosystem:
-
-- Reader libraries — [Bio-Formats](https://www.openmicroscopy.org/bio-formats/),
-  [xylib](https://github.com/wojdyr/xylib),
-  [HyperSpy/RosettaSciIO](https://github.com/hyperspy/rosettasciio),
-  [OpenChrom](https://www.openchrom.net/), GSAS-II, SpectroChemPy.
-- Registries/runners — [Datatractor/MaRDA](https://datatractor.org)
-  (`yard` registry + `beam` runner), which has no benchmark corpus.
-- Preservation/emulation — Software Heritage, EaaSI, the Software Preservation
-  Network.
-
-We sit at the evaluation-and-provenance layer the ecosystem lacks: measuring and
-preserving the *correctness* of liberation, and exposing the undocumented
-behaviors that break reproducibility.
-
-## Scope
-
-Interoperability and preservation: recovering lawfully held data and the
-semantics that produced it. Formats and protocols are functional facts, and
-reading one's own data is broadly protected activity — see
-[`docs/legal-basis.md`](docs/legal-basis.md). This project does not distribute
-circumvention tools or defeat access controls on current commercial software.
+Reader libraries (Bio-Formats, xylib, RosettaSciIO, OpenChrom, GSAS-II),
+registries ([Datatractor/MaRDA](https://datatractor.org)), and
+preservation/emulation (Software Heritage, EaaSI) each solve part of the
+problem. None reconstructs the *application* — the computation, document model,
+workflows, and programmability. That is the gap this project takes.
 
 ## Contributing
 
-Format status corrections (with a reproducible check), new decoding-task corpus
-entries, and provenance findings are welcome. See the docs for the format of
-each.
+Progress is published as small, independently verifiable units: one documented
+operation implemented, a failing native-project fixture, a recovered instrument
+message with evidence, a reference computation showing a numerical discrepancy,
+a missing command with a reproducible input and expected result. See a target's
+dossier for its open work packages.
 
 ## License
 
-[CC-BY-4.0](LICENSE) — reuse with attribution.
+[CC-BY-4.0](LICENSE) for documentation and research; implementation
+repositories carry their own code licenses.
