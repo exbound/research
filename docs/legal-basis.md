@@ -1,0 +1,63 @@
+# Legal basis for format liberation and interoperability
+
+A plain-language summary of why reading your own data out of a proprietary
+format, and reverse-engineering a format or protocol for interoperability, is
+broadly protected. This is a researched synthesis for orientation, not legal
+advice; specifics vary by jurisdiction and facts.
+
+## Formats are functional facts
+
+File formats and wire protocols are functional — the interface specifications
+and the requirements for compatibility are not protected expression. Documenting
+"bytes 0–3 are a magic number, the next 4 are a little-endian length" is
+fact-finding, not copying. In the US, intermediate copying by disassembly to
+reach those unprotected functional elements has been held to be fair use when it
+is the only way in (*Sega v. Accolade*, 977 F.2d 1510; *Sony v. Connectix*, 203
+F.3d 596). In the EU, the Software Directive (2009/24/EC) Art. 1(2) excludes
+ideas and principles from protection, Art. 5(3) permits black-box observation,
+and Art. 6 permits decompilation where indispensable for interoperability.
+
+## Reading your own data usually triggers no access-control question
+
+When a data file is not behind a technological protection measure, anti-
+circumvention rules simply do not apply; the only questions are copyright
+(answered by the functional-facts/fair-use analysis above) and contract. In the
+EU, contractual terms that forbid the Art. 5(3) observation right or the Art. 6
+decompilation right are void (Art. 8), and a lawful user may even decompile to
+correct errors (*Top System v. Belgian State*, C-13/20, 2021).
+
+## Preservation has specific support
+
+US Copyright Office §1201 triennial rulemaking grants exemptions for libraries,
+archives, and museums to preserve software and software-dependent materials
+(37 CFR §201.40), expanded in 2024, and for diagnosis/maintenance/repair of
+devices. The Software Preservation Network and Library Copyright Alliance are
+the organized proponents; right-to-repair reinforces the same "access to
+maintain your own tools" principle.
+
+## The line this project holds
+
+- **In scope:** parsing lawfully held data files, reverse-engineering formats and
+  instrument protocols for interoperability, recovering processing semantics,
+  preserving instrument-bound capability. Act only on lawfully obtained copies,
+  and record provenance.
+- **Out of scope:** defeating a DRM, dongle, or activation check on
+  currently-sold software to enable unlicensed use, and distributing
+  circumvention tools. That is a distinct, legally fraught activity, outside the
+  interoperability rationale.
+
+## Clean-room practice
+
+Where a format is reimplemented from a proprietary original, the defensible
+method is a documented two-phase wall: an analysis phase produces a functional
+specification that excludes verbatim code and symbol names; an implementation
+phase builds from that specification alone. This grounds the result as
+independent creation. It defends copyright, not patents — a patented algorithm
+can still read on an independent implementation. Open-source readers are not
+proprietary originals and may be used and extended directly.
+
+### Primary sources
+
+17 U.S.C. §1201; *Sega v. Accolade* 977 F.2d 1510 (9th Cir. 1992); *Sony v.
+Connectix* 203 F.3d 596 (9th Cir. 2000); Directive 2009/24/EC Arts. 5–6, 8;
+CJEU C-13/20 (2021); 37 CFR §201.40.
