@@ -5,12 +5,15 @@
 > research record, not an engineering spec.
 
 - **Target:** OriginLab Origin / OriginPro (same binary; edition is a license key)
-- **Status:** research · **Last updated:** 2026-10-16
+- **Status:** research · **Last updated:** 2026-10-18
 - **One-line objective:** an independent Origin-*compatible* scientific data
   analysis & plotting environment, reached by verifiable subsystems — native
   project compatibility first, then numerics, provenance, graphing, scripting.
-- **Implementation:** a separate implementation repository · **Strategy:**
-  extend LabPlot (see §E).
+- **Implementation:** [`exbound/opj`](https://github.com/exbound/opj) — an
+  independent, clean-room `.opju`/`.opj` reader (C2 format compatibility; its
+  [`ROADMAP.md`](https://github.com/exbound/opj/blob/main/ROADMAP.md) phases the
+  object-model decode) · **Strategy:** extend LabPlot for the wider environment
+  (see §E).
 
 ## A. Product & version archaeology — ESTABLISHED
 
