@@ -45,8 +45,14 @@ not infer requirements from a research diary.
 ## Targets
 
 The campaign is a set of target-level reconstruction programs, each analyzed
-across the full C1–C9 model — not a list of file converters. The inventory and
-per-target dossiers live in `dossiers/`. (Being populated; see status in each.)
+across the full C1–C9 model — not a list of file converters. The
+[target inventory](dossiers/README.md) lists all twelve and tracks each
+dossier's status.
+
+The active pilot is **#4 OriginPro** ([`dossiers/origin.md`](dossiers/origin.md)),
+whose clean-room `.opju`/`.opj` reader is the first implementation repository,
+[`exbound/opj`](https://github.com/exbound/opj). The remaining targets await
+research; a dossier is created only once a target has verified findings.
 
 ## Scope and boundaries
 
