@@ -25,6 +25,7 @@ is tracked there.
 | 10 | Bruker DIFFRAC.EVA | Diffraction-data processing, phase identification workflows | Independent diffraction application + project compatibility |
 | 11 | Renishaw WiRE | Raman acquisition formats, mapping, corrections, spectral analysis | Independent Raman spectroscopy + mapping environment |
 | 12 | HORIBA LabSpec | Acquisition metadata, map operations, processing, calibration | Independent Raman processing + compatible instrument workflows |
+| 13 | Mettler STARe | Thermal-analysis project/data format; the vendor's evaluation software is a free public download | Independent thermal-analysis processing + workstation |
 
 ## Dossier status
 
@@ -34,7 +35,7 @@ marked awaiting research and are not pre-filled with generated summaries.
 
 - **#4 OriginPro** — [`origin.md`](origin.md) · research in progress (the worked
   example).
-- **#1–3, #5–12** — awaiting research; no dossier yet. Each will be created from
+- **#1–3, #5–13** — awaiting research; no dossier yet. Each will be created from
   `TEMPLATE.md` when it has verified findings, not before.
 
 ## Shared vs. per-target
@@ -54,7 +55,7 @@ libraries), prefer building on it; the vendor app is the behavioral reference.
 
 ## Sequencing
 
-Research across all 12 targets can proceed in parallel. Independent
+Research across all 13 targets can proceed in parallel. Independent
 implementation ramps up per target only once its dossier has sufficiently
 precise reference versions, functional inventory, behavioral spec, and
 verification method. This avoids the failure mode of many impressive pull
