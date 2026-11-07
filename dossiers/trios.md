@@ -67,9 +67,22 @@ against the OpenReadout TRIOS 5 layout):
 - **Three `21 06`-prefixed GUID-tagged records** holding the step's signal data
   as float32 arrays per the published layout. GUIDs observed in G0:
   `d22bc6bd-a1ee-8347-8663-a8887d4d9e73`, `12c18b44-e63f-b74a-8e86-36dca875114c`,
-  `f5720636-37f9-4b41-bd06-5b9d80d6975e`. NEEDS-OBSERVATION: the signal values
-  have not yet been decoded and compared value-for-value against the source
-  CSV — that is the next fixture grade.
+  `f5720636-37f9-4b41-bd06-5b9d80d6975e`.
+- **ESTABLISHED — signal values decoded value-for-value (T-1, 2026-11-07).**
+  The two signal records store the imported CSV data exactly. The record at
+  offset 10228 (length 91, GUID `448bc112-3fe6-4ab7-8e86-36dca875114c`)
+  stores the Time column as seven float32 values
+  `[0, 1, 2, 3, 4, 5, 6]` — the raw source values, in row order, no shift. The
+  record at offset 10328 (length 91, GUID
+  `360672f5-37f9-414b-bd06-5b9d80d6975e`) stores the Torque column as
+  `[0, 1e-6, -1e-6, 0.5e-6, 3.14159e-6, 1, 1e-13]` — each source value scaled
+  by 1e-6: the µN·m column assigned at import ("Oscillation torque [µN·m]") is
+  stored in SI newton-metres. Values round-trip within float32 rounding
+  (e.g. 3.14159 stored as 3.1415900139109e-06 after the µN·m → N·m scaling).
+  Structural note: the float32 block of each record starts at arbitrary byte
+  alignment relative to the record start (one byte off the 4-byte grid in the
+  Time record), and the trailing `1` word after the last value is record
+  framing, not an eighth data point.
 
 **Independent reader landscape.** OpenReadout (Rust; the
 `openreadout-thermal` crate) reads TRIOS 5 `.tri` natively, validates against
@@ -143,11 +156,12 @@ matrix below.
 
 Executable reference tests, given input + parameters + version → exact
 numerical result and project-state change. The graded-fixture ladder starts at
-G0 (above): grade the next fixture by **decoding the three GUID-tagged signal
-records of G0 and comparing value-for-value against the source CSV** (units
-µN·m as assigned, vs. OpenReadout's documented SI storage), then add
-multi-step procedures, real instrument types, and the computed-variable and
-analysis-result content OpenReadout does not decode.
+G0 (above). **G0's value-grade passed** (2026-11-07): both signal records
+decoded and compared value-for-value against the source CSV, including the
+µN·m → SI newton-metre conversion of the torque column (details in the
+established findings above). The next grade is to add multi-step procedures,
+real instrument types, and the computed-variable and analysis-result content
+OpenReadout does not decode.
 
 ## E. Reconstruction architecture — EARLY DECISIONS
 
@@ -185,7 +199,7 @@ coverage sketch — no enumerated feature set exists yet.
 | Capability | Reference (observed?) | Implementation | Verification |
 |------------|----------------------|----------------|--------------|
 | C1 Acquisition & execution | partial — free full v6.1.0.641 installed and operated offline on Win11 LTSC eval | n/a | n/a |
-| C2 Data compatibility | partial — native `.tri` family (TRIOS 5 generation) established on a self-authored fixture; cell data not yet decoded end-to-end | none | none |
+| C2 Data compatibility | partial — native `.tri` family (TRIOS 5 generation) established on a self-authored fixture (n=1); native cell data decoded value-for-value on the G0 fixture, incl. the µN·m → SI newton-metre conversion (T-1, 2026-11-07) | none | none (fixture-based) |
 | C3 Document compatibility | awaiting research | none | none |
 | C4 Computation | awaiting research | none | none |
 | C5 Workflow semantics | awaiting research | none | none |
@@ -219,7 +233,7 @@ See `../docs/legal-basis.md`.
 
 | WP | Scope | Capability | Verification | Status |
 |----|-------|-----------|--------------|--------|
-| T-1 | G0 grade: decode the three signal records; compare values against the source CSV (µN·m → SI storage) | C2 | value-for-value match | next |
+| T-1 | G0 grade: decode the three signal records; compare values against the source CSV (µN·m → SI storage) | C2 | value-for-value match | **done 2026-11-07** — both signal records round-trip value-for-value (float32); torque stored SI (×1e-6) |
 | T-2 | Pin the header key/value encoding (string-length scheme) against OpenReadout's published source | C2 | byte-exact header parse | next |
 | T-3 | Graded corpus: multi-step procedures, real instrument types, computed variables, analysis results | C2/C4 | fixtures diffed vs. exports + OpenReadout | planned |
 | T-4 | Legacy generation (`0x0C`, TRIOS 3/4) sample acquisition + layout | C2 | sample file with provenance | needs-reference-lab |
@@ -228,8 +242,11 @@ See `../docs/legal-basis.md`.
 
 ## Open questions / blockers (ranked)
 
-1. **Signal values vs. source CSV** — are the stored float32s exactly the
-   imported values (or a unit-converted form)? Resolvable-by-research (T-1).
+1. **Signal values vs. source CSV** — resolved 2026-11-07 (T-1): the stored
+   float32s are exactly the imported values, in row order, with the torque
+   column unit-converted µN·m → SI newton-metres (×1e-6). Both signal records
+   verified value-for-value on the G0 fixture; widening beyond n=1 awaits the
+   graded corpus (ranked item 4).
 2. **Header encoding** — exact string-length scheme; pin against
    OpenReadout's published source. Resolvable-by-research.
 3. **What TRIOS computes vs. stores** — which of the 90+ analysis outputs
