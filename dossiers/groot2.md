@@ -7,7 +7,7 @@
 
 - **Target:** Groot2 (Auryn Robotics) — the proprietary integrated development
   environment for the open-source BehaviorTree.CPP behavior-tree ecosystem
-- **Status:** research · **Last updated:** 2026-11-13
+- **Status:** research · **Last updated:** 2026-11-13 (G-1 save-shape pinned)
 - **One-line objective:** an independent Groot2-*compatible* behavior-tree IDE
   that unifies the three lives of a tree — authored (`.btproj`), executing
   (ZMQ monitor), and recorded (`.btlog`) — over the publicly specified
@@ -29,12 +29,13 @@ breakpoints, fault injection, blackboard visualization, and search.
 **The compatibility surface is ~90% publicly specified.** The open-source
 BehaviorTree.CPP pins, byte for byte, everything a compatible IDE must
 interoperate with: the `.btlog` grammar, the ZMQ live-monitor protocol, the
-XML tree dialect and `TreeNodesModel`, and the SQLite `.db3` schema. The
-compatibility-surface study on this branch cites each of these against the
-4.9.0 source and against an independent open re-implementation of the
-protocol as cross-check. What remains proprietary-only is small: the exact
-`.btproj` save-shape beyond the observed shape, the free-tier feature
-gating, and product/UX behavior.
+XML tree dialect and `TreeNodesModel`, the SQLite `.db3` schema, and — now
+verified bidirectionally — the `.btproj` save-shape, whose exact serializer
+delta is pinned below (work package G-1, 2026-11-13). The compatibility-
+surface study on this branch cites each of these against the 4.9.0 source and
+against an independent open re-implementation of the protocol as cross-check.
+What remains proprietary-only is small: the free-tier feature gating, and
+product/UX behavior.
 
 ### WP1 — the vendor sample corpus (15 files, provenance recorded)
 
@@ -91,6 +92,36 @@ grammar refinements were then verified against the 4.9.0 source:
    the mode-switch behavior recorded as a compatibility surface in its own
    right.
 
+### G-1 — the `.btproj` save-shape, pinned by save-and-byte-diff (2026-11-13)
+
+Work package G-1 is **DONE** (2026-11-13). Save-and-byte-diff against the
+banked sample corpus — save-as from the reference IDE to new paths,
+same-directory controlled copies, originals re-hashed untouched after —
+establishes the following.
+
+**Serializer delta.** In **V4 mode** the reference IDE unconditionally adds
+`BTCPP_version="4.10"` to the `<root>` tag on save; in **V3 mode** it adds
+nothing. The attribute's *placement* depends on the file type: in a
+`.btproj` (project file) it is inserted **inline** on the same line as the
+existing attributes; in a tree XML file it goes on its **own indented
+continuation line**. Include paths are rewritten **relative to the saved
+file's own location** (bare filename when saved alongside, relative path
+otherwise). Everything else round-trips **byte-exact** — the
+`<TreeNodesModel>` declaration block, comments, attribute order, indentation,
+and XML escaping — and the **V3 in-place round-trip is byte-identical** to
+the input.
+
+**Two structural findings.** (1) The IDE only ever saves **projects**:
+a single opened tree is not rewritten in place on Save As — it is wrapped as
+a 1-include `.btproj` — and a bare tree XML is rewritten only when its
+*content* has been modified in the editor. (2) **Node layout is not
+persisted**: tree-node canvas coordinates are not stored in either file type
+and are recomputed on load, so a save-and-reopen cycle is layout-neutral.
+
+The evidence (all saved artifacts, byte-for-byte, with the full method and
+per-file diffs) is banked in the private campaign repository; the dossier
+records the established result here, per the public/private wall.
+
 ## A. Product & version archaeology
 
 | Version | Released | Edition/modules | OS/arch | Notes | Status |
@@ -139,10 +170,9 @@ item maps to C1–C9 in the matrix below.
 
 Executable reference tests, given input + parameters + version → exact
 decoded result and project-state change. The graded-fixture ladder has its
-first three rungs from the kickoff (the vendor sample corpus, the pinned-
-grammar log, and the v3↔v4 mode-switch project); the next grade is to add
-the exact `.btproj` save-shape (see work packages) and the recording-
-container question.
+first four rungs from the kickoff plus G-1 (the vendor sample corpus, the
+pinned-grammar log, the v3↔v4 mode-switch project, and the pinned
+`.btproj` save-shape); the next grade is the recording-container question.
 
 ## E. Reconstruction architecture — EARLY DECISIONS
 
@@ -195,8 +225,8 @@ coverage sketch — no enumerated feature set exists yet.
 | Capability | Reference (observed?) | Implementation | Verification |
 |------------|----------------------|----------------|--------------|
 | C1 Acquisition & execution | partial — free full v1.10.0 installed and operated; sample corpus banked with provenance | n/a | n/a |
-| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact) | none | partial (kickoff WP1–WP2) |
-| C3 Document compatibility | awaiting research (the `.btproj` save-shape is the open item) | none | none |
+| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact); `.btproj` save-shape verified bidirectionally at the container and serialization level (G-1, 2026-11-13) | none | partial (kickoff WP1–WP2; G-1) |
+| C3 Document compatibility | partial — the `.btproj` save-shape is pinned by save-and-byte-diff (G-1): serializer delta, include-rewrite rule, and V3-vs-V4 behavior all established | none | partial (G-1) |
 | C4 Computation | n/a (a behavior-tree IDE; the C++ library is the compute reference) | none | none |
 | C5 Workflow semantics | awaiting research (the v3↔v4 mode switch is the first recorded) | none | none |
 | C6 Programmability | documented only (the ZMQ monitor protocol, fully specified in open source) | none | none |
@@ -234,7 +264,7 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
 | WP | Scope | Capability | Verification | Status |
 |----|-------|-----------|--------------|--------|
 | G-0 | Vendor sample corpus: 15 files, parse + include-resolve + instantiate; record the 3 vendor-generation regressions and the v3/v4 delta fixtures | C2/C3 | all 15 parse; includes resolve; the 3 throws recorded | **done 2026-11-13** |
-| G-1 | `.btproj` exact save-shape: save-as from the reference IDE, byte-diff against a banked sample; enumerate the Groot2-only attributes (`editable`, `<description>`, any others) and the per-project settings block | C2/C3 | byte-diff clean; the Groot2 extension attributes enumerated | next |
+| G-1 | `.btproj` exact save-shape: save-as from the reference IDE, byte-diff against a banked sample; enumerate the Groot2-only attributes (`editable`, `<description>`, any others) and the per-project settings block | C2/C3 | byte-diff clean; the Groot2 extension attributes enumerated | **done 2026-11-13** — result in the findings above |
 | G-2 | The recording-container question: does the reference IDE's own "save log" produce a plain `.btlog`, or a Groot2-side wrapper? (The bundled zstd is the hint.) | C2 | a saved log, hex-inspected against the pinned grammar | next |
 | G-3 | Breakpoints & fault-injection behavior — the two flagship PRO features. Needs a PRO license, or the free-tier boundary observed to the limit (does the UI surface them, is the node cap the only gate, does the ZMQ hook path respond when armed from an external client) | C5/C6 | recorded breakpoint arm/disarm/clear cycle; fault-injection substitution observed | needs-license (or free-tier-boundary observation) |
 | G-4 | ZMQ live-monitor interop: an independent client (REQ/SUB to 1667/1668) drives a real `Groot2Publisher` and a live reference IDE session side by side; pin the polling cadence, the reconnect behavior, and whether the reference IDE ever sends on the PUB socket beyond listening | C6/C8 | an independent monitor client renders a live session identically to the reference IDE | next |
@@ -243,28 +273,26 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
 
 ## Open questions / blockers (ranked)
 
-1. **The exact `.btproj` save-shape** — what attributes and elements the
-   reference IDE writes on save beyond `project_name`, `<include>`, and
-   `<TreeNodesModel>`; whether per-project settings and breakpoint sets go
-   in-file or in a side file. Resolvable by a save-and-diff (G-1), free
-   tier suffices.
-2. **The recording container** — whether the reference IDE's own saved log
+1. **The recording container** — whether the reference IDE's own saved log
    is a plain `.btlog`/`.db3` or a Groot2-side wrapper. The bundled zstd is
    the strongest hint of a wrapper, and this is the single largest remaining
    format risk for a log-replay replacement. Resolvable by a hex-inspect of
    a saved log (G-2).
-3. **Breakpoint and fault-injection behavior** — the two flagship PRO
+2. **Breakpoint and fault-injection behavior** — the two flagship PRO
    features are the least-specified surface and have zero open
    implementations. Needs a PRO license, or the free-tier boundary mapped
    carefully enough to observe the behavior (G-3).
-4. **ZMQ live-monitor interop** — the open-source side pins the *server*,
+3. **ZMQ live-monitor interop** — the open-source side pins the *server*,
    not the *client*: the reference IDE's polling cadence, reconnect
    behavior, and any traffic on the PUB socket beyond listening are
    client-side choices we have to match closely enough to be compatible
    (G-4).
-5. **v3-compat mode depth** — what the reference IDE does differently after
+4. **v3-compat mode depth** — what the reference IDE does differently after
    the mode switch, and whether it re-writes the project in the v4 shape on
    save (G-5).
-6. **Free-tier boundary map** — the exact feature set gated by the 20-node
+5. **Free-tier boundary map** — the exact feature set gated by the 20-node
    cap versus the PRO gate, at the protocol level rather than the UI level
    (G-6).
+
+(Formerly ranked first: the exact `.btproj` save-shape. Resolved by G-1 on
+2026-11-13 — see the findings above; the result drops G-1 from the open list.)
