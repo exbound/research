@@ -35,7 +35,9 @@ marked awaiting research and are not pre-filled with generated summaries.
 
 - **#4 OriginPro** — [`origin.md`](origin.md) · research in progress (the worked
   example).
-- **#1–3, #5–13** — awaiting research; no dossier yet. Each will be created from
+- **#5 TA TRIOS** — [`trios.md`](trios.md) · research in progress (first
+  graded fixture verified against the native format).
+- **#1–3, #6–13** — awaiting research; no dossier yet. Each will be created from
   `TEMPLATE.md` when it has verified findings, not before.
 
 ## Shared vs. per-target
