@@ -38,8 +38,10 @@ marked awaiting research and are not pre-filled with generated summaries.
   example).
 - **#5 TA TRIOS** — [`trios.md`](trios.md) · research in progress (first
   graded fixture verified against the native format).
-- **#1–3, #6–14** — awaiting research; no dossier yet. Each will be created from
-  `TEMPLATE.md` when it has verified findings, not before.
+- **#14 Groot2** — [`groot2.md`](groot2.md) · research in progress (kickoff
+  work packages 1–3 verified; interop proofs against the reference IDE).
+- **#1–3, #6–13** — awaiting research; no dossier yet. Each will be created
+  from `TEMPLATE.md` when it has verified findings, not before.
 
 ## Shared vs. per-target
 

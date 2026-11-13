@@ -93,13 +93,13 @@ grammar refinements were then verified against the 4.9.0 source:
 
 ## A. Product & version archaeology
 
-| Version | Released | Edition/modules | OS/arch | Notes |
-|---------|----------|-----------------|---------|-------|
-| Groot 1 (legacy) | pre-2024 | Groot | Windows, Linux | predecessor; BT.CPP 3.x era |
-| Groot2 1.0 | 2024 | free tier + PRO | Windows | launch; ZMQ live-monitor compat |
-| Groot2 1.1 | 2024 | free tier + PRO | Windows, Linux | **BT.CPP 3.8+ `Groot2Publisher` compatibility** added; breakpoints/file save |
-| Groot2 1.8.x | 2025 | free tier + PRO | Windows, Linux | themes; Groot1-compat save toggle; port-validation toggle |
-| Groot2 1.10.0 (Auryn Robotics) | 2026-11-09 | free tier (20-node cap on monitor/log) + **PRO** (€590/yr: breakpoints, fault injection, blackboard viz, search) | Windows | **reference version under test** |
+| Version | Released | Edition/modules | OS/arch | Notes | Status |
+|---------|----------|-----------------|---------|-------|--------|
+| Groot 1 (legacy) | pre-2024 | Groot | Windows, Linux | predecessor; BT.CPP 3.x era | NEEDS-OBSERVATION — release binaries for the 1.x-generation lineup downloaded and hashed, and the lineage (BT.CPP 3.x era) confirmed against the vendor's own page history |
+| Groot2 1.0 | 2024 | free tier + PRO | Windows | launch; ZMQ live-monitor compat | NEEDS-OBSERVATION — the 1.0 release binary downloaded and hashed, the 2024 release date confirmed, and the ZMQ live-monitor behavior observed on that build |
+| Groot2 1.1 | 2024 | free tier + PRO | Windows, Linux | **BT.CPP 3.8+ `Groot2Publisher` compatibility** added; breakpoints/file save | NEEDS-OBSERVATION — the 1.1 binary downloaded and hashed, and the changelog date cross-checked against the GitHub issue tracker and the vendor release page |
+| Groot2 1.8.x | 2025 | free tier + PRO | Windows, Linux | themes; Groot1-compat save toggle; port-validation toggle | NEEDS-OBSERVATION — the 1.8.x binaries downloaded and hashed, and the 2025 dates plus the 1.2–1.9 change boundaries cross-checked against the issue tracker; the Linux build confirmed on Linux hardware |
+| Groot2 1.10.0 (Auryn Robotics) | 2026-11-09 | free tier (20-node cap on monitor/log) + **PRO** (€590/yr: breakpoints, fault injection, blackboard viz, search) | Windows | **reference version under test** | **ESTABLISHED** — binary in hand (hash recorded); running behavior observed on the reference environment 2026-11-13, including the edition/module split and the free-tier node cap |
 
 ESTABLISHED:
 
@@ -113,8 +113,10 @@ ESTABLISHED:
   vendor's own v3/v4 project and tree samples — provenance recorded,
   banked privately.
 
-NEEDS-OBSERVATION: the full edition/module matrix across all releases, the
-OS/arch support matrix for Linux/macOS, and the 1.2–1.9 change boundaries.
+NEEDS-OBSERVATION (the table's status column names the per-row evidence that
+would promote each row): the full edition/module matrix across all releases,
+the OS/arch support matrix — in particular whether any release shipped for
+macOS — and the 1.2–1.9 change boundaries.
 
 ## B. Binary & runtime inventory — AWAITING RESEARCH
 
