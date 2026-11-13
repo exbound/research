@@ -46,7 +46,7 @@ not infer requirements from a research diary.
 
 The campaign is a set of target-level reconstruction programs, each analyzed
 across the full C1–C9 model — not a list of file converters. The
-[target inventory](dossiers/README.md) lists all thirteen and tracks each
+[target inventory](dossiers/README.md) lists all fourteen and tracks each
 dossier's status.
 
 The active pilot is **#4 OriginPro** ([`dossiers/origin.md`](dossiers/origin.md)),
