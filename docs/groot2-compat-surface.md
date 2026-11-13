@@ -409,8 +409,15 @@ well-specified grammar for:
 - **File shape:** `<root BTCPP_format="4" [project_name="…"] …>`, optional
   `<include path="…"/>`, one or more `<BehaviorTree ID="…">` trees, and an
   optional `<TreeNodesModel>`. Parsing rules are enforced by
-  `BT/src/xml_parsing.cpp` (e.g. `:355-359`: `BTCPP_format` must be present
-  and must be `"4"`; 4.11 adds `BTCPP_version` as well, per 4.11 changelog).
+  `BT/src/xml_parsing.cpp`. *Corrected 2026-11-13 against corpus
+  verification:* at 4.9.0 a **missing** `BTCPP_format` is a *warning* only
+  (`xml_parsing.cpp:355-360`), and **no value check exists** — a file
+  declaring `"3"` parses untouched at 4.9.0. Only the *emitted* XSD marks
+  the attribute `use="required"`. (4.11 adds `BTCPP_version` as well, per
+  the 4.11 changelog.) A compatibility implementation should therefore
+  treat `BTCPP_format` as advisory metadata, not a hard gate — the
+  vendor's own shipped samples omit it in one file and never re-assert it
+  on save.
 - **Node elements:** tag name = registration name; attributes = port remaps
   (input and output port names/values), `name=` instance name,
   `ID=` for `<SubTree>`, `_autoremap="true"` (auto port-remapping,
