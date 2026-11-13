@@ -26,6 +26,7 @@ is tracked there.
 | 11 | Renishaw WiRE | Raman acquisition formats, mapping, corrections, spectral analysis | Independent Raman spectroscopy + mapping environment |
 | 12 | HORIBA LabSpec | Acquisition metadata, map operations, processing, calibration | Independent Raman processing + compatible instrument workflows |
 | 13 | Mettler STARe | Thermal-analysis project/data format; the vendor's evaluation software is a free public download | Independent thermal-analysis processing + workstation |
+| 14 | Groot2 (BehaviorTree.CPP IDE) | Project format (.btproj) and log format (.btlog); monitoring/replay behavior | Independent behavior-tree IDE for the open BehaviorTree.CPP ecosystem: editing, monitoring, log replay |
 
 ## Dossier status
 
@@ -37,7 +38,7 @@ marked awaiting research and are not pre-filled with generated summaries.
   example).
 - **#5 TA TRIOS** — [`trios.md`](trios.md) · research in progress (first
   graded fixture verified against the native format).
-- **#1–3, #6–13** — awaiting research; no dossier yet. Each will be created from
+- **#1–3, #6–14** — awaiting research; no dossier yet. Each will be created from
   `TEMPLATE.md` when it has verified findings, not before.
 
 ## Shared vs. per-target
@@ -57,7 +58,7 @@ libraries), prefer building on it; the vendor app is the behavioral reference.
 
 ## Sequencing
 
-Research across all 13 targets can proceed in parallel. Independent
+Research across all 14 targets can proceed in parallel. Independent
 implementation ramps up per target only once its dossier has sufficiently
 precise reference versions, functional inventory, behavioral spec, and
 verification method. This avoids the failure mode of many impressive pull
