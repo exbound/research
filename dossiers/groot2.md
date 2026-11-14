@@ -7,7 +7,7 @@
 
 - **Target:** Groot2 (Auryn Robotics) — the proprietary integrated development
   environment for the open-source BehaviorTree.CPP behavior-tree ecosystem
-- **Status:** research · **Last updated:** 2026-11-13 (G-2 recording container resolved — the IDE saves the plain public format)
+- **Status:** research · **Last updated:** 2026-11-13 (G-3 breakpoint/fault-injection surface mapped via the PRO tier)
 - **One-line objective:** an independent Groot2-*compatible* behavior-tree IDE
   that unifies the three lives of a tree — authored (`.btproj`), executing
   (ZMQ monitor), and recorded (`.btlog`) — over the publicly specified
@@ -171,6 +171,71 @@ recording implementation should match the IDE's flow as well as its bytes:
 The recording artifact, its hash, the first-bytes analysis, the reader
 output, and the full method are banked in the private campaign tree; the
 dossier records the established result here, per the public/private wall.
+
+### G-3 — the breakpoint / fault-injection surface, mapped (2026-11-13)
+
+Work package G-3 is **DONE** (2026-11-13): the breakpoint and
+fault-injection behavior of the reference IDE's two flagship PRO features
+is **ESTABLISHED as observed behavior**, verified against the
+spec-conformance monitor server with correlated server-log evidence.
+
+**Route to the PRO tier:** the vendor's own **free 30-day PRO trial** —
+the reference IDE's PRO activation was started from the vendor's own
+trial flow, a plain reference-license route with no circumvention. That is
+what G-3 needed.
+
+**Method.** The reference IDE — **Groot2 v1.10.0, PRO tier** — was
+connected as a live client to the same spec-conformance monitor server
+(the server built purely from the pinned public specification that proved
+the G-4 interop), with the known-content scenario animating. Breakpoints
+and fault injections were armed, re-armed, cleared, and removed through
+the IDE's UI, and every wire message was correlated against the
+server's own request/PUB log for the whole session (a full census over
+~90,000 log lines: six request types and one PUB message kind were
+observed — the IDE's complete wire vocabulary in this scenario).
+
+**ESTABLISHED — the breakpoint / fault-injection wire behavior:**
+
+- **Arming any hook** (breakpoint or fault injection) sends a
+  **`HOOK_INSERT`** request on the REQ/REP socket **immediately on
+  "Hook Config … OK"** — before the armed node ticks.
+- **A breakpoint (interactive mode) additionally publishes
+  `BREAKPOINT_REACHED` on the PUB socket exactly once, at hook-insert
+  time** — the publisher-side publish the open-source protocol specifies.
+  Against the spec-conformance server, **the tree does not pause**: the
+  reference IDE keeps animating, with no halt, dialog, or request stall.
+- **The IDE never sends a `BREAKPOINT_UNLOCK`** — over the whole
+  session the IDE's vocabulary was FULLTREE, STATUS,
+  GET_TRANSITIONS, HOOK_INSERT, HOOK_REMOVE, TOGGLE_RECORDING, with
+  the single `BREAKPOINT_REACHED` PUB kind; no unlock request appeared.
+  The protocol's interactive halt-unlock cycle was therefore **never
+  exercised by the IDE against a spec server**. An independent
+  implementation's breakpoint semantics are **server-authoritative per
+  the open-source protocol**: whether an armed breakpoint pauses the
+  tree is a decision the *server's* pre-tick callback makes, and the
+  reference client behaves as though that callback never blocks.
+- **Fault injection = Replace Node (Success | Failure):** a
+  `HOOK_INSERT` carrying the node-replacement mode, **silent on the PUB
+  socket** (no `BREAKPOINT_REACHED` for it). In the UI the node shows a
+  ⊗ marker and renders FAILURE red each cycle with red dashed
+  propagation to the parent — a fault with **no distinct wire message**;
+  only the server-side status records differ.
+- **The "Once" checkbox is invisible on the wire** — the insert carries
+  no distinguishing field, and the IDE does not retire the entry itself;
+  any fire-once enforcement is **server-side**.
+- **Removal happens only via `Hook Config → None → OK`**, which sends
+  **`HOOK_REMOVE`**. The Breakpoints panel's own delete/trash/X controls
+  sent nothing on the wire — entries clear client-side, leaving the
+  server-side hook in place until an explicit `None → OK`.
+- **The Breakpoints panel** (the vendor's vocabulary is "queries")
+  exposes load/save of query files (file dialogs, not exercised here),
+  delete/trash and X controls, momentary Action buttons C/S/F (no wire
+  effect against this server), an auto-zoom control, and a list showing
+  both hook kinds with renumbering.
+- **The per-node Hook Config dialog** offers None / Breakpoint
+  (Interactive) / Replace Node (Success | Failure) with a Once
+  checkbox, Cancel/OK, and **pre-selects the node's current
+  configuration on reopen**.
 
 ### G-4 — the live-monitor interop, proven end-to-end (2026-11-13)
 
@@ -379,42 +444,44 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
 | G-0 | Vendor sample corpus: 15 files, parse + include-resolve + instantiate; record the 3 vendor-generation regressions and the v3/v4 delta fixtures | C2/C3 | all 15 parse; includes resolve; the 3 throws recorded | **done 2026-11-13** |
 | G-1 | `.btproj` exact save-shape: save-as from the reference IDE, byte-diff against a banked sample; enumerate the Groot2-only attributes (`editable`, `<description>`, any others) and the per-project settings block | C2/C3 | byte-diff clean; the Groot2 extension attributes enumerated | **done 2026-11-13** — result in the findings above |
 | G-2 | The recording-container question: does the reference IDE's own "save log" produce a plain `.btlog`, or a Groot2-side wrapper? (The bundled zstd is the hint.) | C2 | a saved log, hex-inspected against the pinned grammar | **done 2026-11-13** — the recording is the plain public format: a live recording captured from the reference IDE parses end to end with zero errors by the pinned-grammar reader (196 transitions, tree XML identical to the served tree); the IDE's own save dialog declares `FileLogger2 Log file (*.btlog)`; the zstd container hypothesis is closed for the log format |
-| G-3 | Breakpoints & fault-injection behavior — the two flagship PRO features. Needs a PRO license, or the free-tier boundary observed to the limit (does the UI surface them, is the node cap the only gate, does the ZMQ hook path respond when armed from an external client) | C5/C6 | recorded breakpoint arm/disarm/clear cycle; fault-injection substitution observed | needs-license (or free-tier-boundary observation) |
+| G-3 | Breakpoints & fault-injection behavior — the two flagship PRO features. Needs a PRO license, or the free-tier boundary observed to the limit (does the UI surface them, is the node cap the only gate, does the ZMQ hook path respond when armed from an external client) | C5/C6 | recorded breakpoint arm/disarm/clear cycle; fault-injection substitution observed | **done 2026-11-13** — the PRO surface is mapped (see the G-3 findings above): run under the vendor's free 30-day PRO trial, against the spec-conformance monitor server with a correlated server-log census; breakpoints are server-authoritative per the open-source protocol, fault injection is a silent replace-mode hook, and removal is `Hook Config → None → OK` only |
 | G-4 | ZMQ live-monitor interop, proven end-to-end: a server built purely from the public spec (all 12 request tags, the status-buffer idle encoding, blackboards, hooks, recording) driven the reference IDE's monitor — tree rendered, transitions animated, the Transitions panel decoded the status encodings (incl. `10+prev`, 11–14). The client's status-validation bounds established: accepts 0–4 and 11–14, rejects all else (notably byte 10, which is unreachable in a conformant stream); a request-mode mismatch stacks error dialogs (296 observed) instead of a clean refusal | C6/C8 | the reference IDE connected as a live client to the spec-built server: tree, live transitions, and status decoding all correct; thousands of requests, zero server-side exceptions | **done 2026-11-13** — result in the findings above |
 | G-5 | v3-compat mode: the full v3 project load (not just the mode switch), the "(V3 Compatibility)" retitling behavior, and what the IDE changes on save after the switch | C3/C5 | the v3 project round-trips through the reference IDE without losing the mode | next |
 | G-6 | Free-tier boundary map: exactly what the 20-node cap gates, and whether any other feature is licensed-gated at the protocol level (as opposed to the UI). Partially informed by the G-4 free-tier observations: blackboard visualization absent from the free-tier UI (PRO-gated), breakpoint feature PRO-gated (upgrade dialog on trigger), Record control present with log export | C2/C8 | recorded cap behavior at 19/20/21 nodes | next (partially informed) |
 
 ## Open questions / blockers (ranked)
 
-1. **Breakpoint and fault-injection behavior** — the two flagship PRO
-   features are the least-specified surface and have zero open
-   implementations. Needs a PRO license, or the free-tier boundary mapped
-   carefully enough to observe the behavior (G-3).
-2. **ZMQ live-monitor client behavior** — the open-source side pins the
-   *server*, not the *client*: the reference IDE's exact polling cadence,
-   its reconnect back-off, and any traffic it sends on the PUB socket
-   beyond listening remain to be quantified. G-4 (2026-11-13) removed the
-   interop risk: a spec-built server drove the reference IDE's monitor
-   end-to-end (tree rendered, transitions animated, status encodings
-   decoded), and the client's status-validation bounds are established as
-   observed behavior (accepts 0–4 and 11–14, rejects all else, notably
-   byte 10; a mode mismatch stacks error dialogs) — see the findings
-   above.
-3. **v3-compat mode depth** — what the reference IDE does differently after
+1. **ZMQ live-monitor client behavior** — the open-source side pins the
+   *server*, not the *client*: the reference IDE's exact polling cadence
+   and its reconnect back-off remain to be quantified. G-4 (2026-11-13)
+   removed the interop risk: a spec-built server drove the reference
+   IDE's monitor end-to-end (tree rendered, transitions animated, status
+   encodings decoded), and the client's status-validation bounds are
+   established as observed behavior (accepts 0–4 and 11–14, rejects all
+   else, notably byte 10; a mode mismatch stacks error dialogs) — see
+   the findings above. G-3 (2026-11-13) adds the PUB-socket half of the
+   client vocabulary: the IDE sends nothing on the PUB side beyond the
+   six request kinds, and never sends `BREAKPOINT_UNLOCK` (breakpoint
+   semantics are server-authoritative per the open-source protocol).
+2. **v3-compat mode depth** — what the reference IDE does differently after
    the mode switch, and whether it re-writes the project in the v4 shape on
    save (G-5).
-4. **Free-tier boundary map** — the exact feature set gated by the 20-node
+3. **Free-tier boundary map** — the exact feature set gated by the 20-node
    cap versus the PRO gate, at the protocol level rather than the UI level
    (G-6). Partially informed by the G-4 free-tier observations: blackboard
    visualization is absent from the free-tier UI (PRO-gated), breakpoints are
    PRO-gated (upgrade dialog on trigger), and the Record control is present
    with log export (G-2 exercised it on the free tier).
 
+(Formerly ranked first: breakpoint and fault-injection behavior. Resolved
+by G-3 on 2026-11-13 — see the findings above; the result drops G-3 from
+the open list. Remaining format work: G-5 v3-compat mode depth, and the
+G-6 free-tier boundary map (partially informed by the G-4 and G-2
+free-tier observations).)
+
 (Formerly ranked first: the recording container. Resolved by G-2 on
 2026-11-13 — see the findings above; the result drops G-2 from the open
-list. Remaining format work: G-3 PRO-gated behaviors (license or boundary
-observation), G-5 v3-compat mode depth, and the G-6 free-tier boundary map
-(partially informed by the G-4 and G-2 free-tier observations).)
+list.)
 
 (Formerly ranked first: the exact `.btproj` save-shape. Resolved by G-1 on
 2026-11-13 — see the findings above; the result drops G-1 from the open list.)
