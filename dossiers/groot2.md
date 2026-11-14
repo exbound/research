@@ -7,7 +7,7 @@
 
 - **Target:** Groot2 (Auryn Robotics) — the proprietary integrated development
   environment for the open-source BehaviorTree.CPP behavior-tree ecosystem
-- **Status:** research · **Last updated:** 2026-11-13 (G-1 save-shape pinned)
+- **Status:** research · **Last updated:** 2026-11-13 (G-4 live-monitor interop proven)
 - **One-line objective:** an independent Groot2-*compatible* behavior-tree IDE
   that unifies the three lives of a tree — authored (`.btproj`), executing
   (ZMQ monitor), and recorded (`.btlog`) — over the publicly specified
@@ -122,6 +122,62 @@ The evidence (all saved artifacts, byte-for-byte, with the full method and
 per-file diffs) is banked in the private campaign repository; the dossier
 records the established result here, per the public/private wall.
 
+### G-4 — the live-monitor interop, proven end-to-end (2026-11-13)
+
+Work package G-4 is **DONE** (2026-11-13), and it inverts the usual
+direction of the proof. The compatibility surface is specified on the
+*server* side by BehaviorTree.CPP; the client side — the reference IDE's
+live monitor — has no public spec. G-4 verified it by building the server
+**purely from the pinned public specification** (a spec-conformance
+publisher, no reference to the vendor application) and running the
+reference IDE against it:
+
+- **The IDE rendered the served tree exactly** — the served scenario, a
+  root `Sequence` with three `Script` children, appeared in the monitor
+  as authored by the spec-built server.
+- **The live transitions animated.** The server replayed a scripted
+  transition scenario on a loop; the IDE animated the status changes over
+  **thousands of requests** with zero server-side exceptions.
+- **The IDE's own "Transitions" panel decoded the status records** — the
+  3-bytes-per-node records (`uint16` node id + `uint8` status) —
+  **including the `10 + previous_status` IDLE encodings** (11–14), which
+  the panel rendered as the corresponding idle-after-success /
+  idle-after-failure / idle-after-skipped states.
+
+So the live-monitor wire protocol interop is **ESTABLISHED**: a server
+built from the public spec drives the reference IDE's monitor UI
+end-to-end — tree rendered, transitions animated, status encodings
+decoded by the IDE's own UI. The evidence, with the client's observed
+validation bounds and the free-tier boundary observations, is banked in
+the private campaign tree.
+
+**The client's status-validation bounds (observed behavior).** The open
+spec's decoder note treats values outside 0–4 and 11–14 as IDLE; the
+reference IDE is stricter and *validates*: it accepts status bytes
+**0–4 and 11–14** and rejects everything else, surfacing an error dialog
+and disconnecting/reconnecting on the bad record. In particular **byte 10
+("IDLE-from-IDLE") is rejected** — and in a conformant stream it is
+unreachable: a node's status byte starts at 0 (IDLE) and moves to
+`10 + previous` only on a *real transition to IDLE*, so a never-ticked
+node reads 0, never 10. A compatible monitor must never emit 10.
+
+**Mode agreement is a client-side gate (client quirk).** Running the
+server in a request-mode the IDE had not agreed to (the V3/V4 mode
+mismatch) did not fail cleanly: the IDE **stacked 296 identical error
+dialogs** — it kept polling and kept erroring instead of backing off. A
+client quirk recorded as a compatibility note: mode must match, or the
+session degrades into a dialog flood rather than a clean refusal.
+
+**Free-tier boundary observations (first G-6 input).** Observed on the
+v1.10.0 free tier during this work: the **blackboard visualization is
+absent from the free-tier UI** (PRO-gated — there is no blackboard
+control, not a disabled one); triggering the breakpoint feature presents
+the **PRO-upgrade dialog** (breakpoints are not armable on free tier);
+and the **log-recapture ("Record") control is present and toggleable** on
+free tier, offering a **log export** on stop. So the free-tier gate is
+not a single node-count check — some features are gated by *absence from
+the UI*, while others (record/export) remain present.
+
 ## A. Product & version archaeology
 
 | Version | Released | Edition/modules | OS/arch | Notes | Status |
@@ -212,10 +268,12 @@ cross-check once the delta work is done). Evidence units: the vendor sample
 corpus (15 files) as load fixtures; a pinned-grammar `.btlog` round-tripped
 against the 4.9.0 writer and played back in the reference IDE; the v3↔v4
 mode-switch project as a compatibility-mode fixture; a `.btproj` byte-diff
-against a banked sample after a save-as (work package G-1); a live
-Groot2Publisher session captured by an independent monitor client. "Full
-support" requires an enumerated feature set + passing reference tests, never
-the absence of known bugs.
+against a banked sample after a save-as (work package G-1); the G-4
+interop proof — the reference IDE connected as a live client to a
+spec-built monitor server (tree rendered, transitions animated, status
+encodings decoded by the IDE's own Transitions panel). "Full support"
+requires an enumerated feature set + passing reference tests, never the
+absence of known bugs.
 
 ## Capability coverage matrix (current)
 
@@ -225,13 +283,13 @@ coverage sketch — no enumerated feature set exists yet.
 | Capability | Reference (observed?) | Implementation | Verification |
 |------------|----------------------|----------------|--------------|
 | C1 Acquisition & execution | partial — free full v1.10.0 installed and operated; sample corpus banked with provenance | n/a | n/a |
-| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact); `.btproj` save-shape verified bidirectionally at the container and serialization level (G-1, 2026-11-13) | none | partial (kickoff WP1–WP2; G-1) |
+| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact); `.btproj` save-shape verified bidirectionally at the container and serialization level (G-1, 2026-11-13); live-monitor status records verified against the reference IDE's own Transitions panel, including the `10+prev` IDLE encodings (G-4, 2026-11-13) | none | partial (kickoff WP1–WP2; G-1; G-4) |
 | C3 Document compatibility | partial — the `.btproj` save-shape is pinned by save-and-byte-diff (G-1): serializer delta, include-rewrite rule, and V3-vs-V4 behavior all established | none | partial (G-1) |
 | C4 Computation | n/a (a behavior-tree IDE; the C++ library is the compute reference) | none | none |
 | C5 Workflow semantics | awaiting research (the v3↔v4 mode switch is the first recorded) | none | none |
-| C6 Programmability | documented only (the ZMQ monitor protocol, fully specified in open source) | none | none |
+| C6 Programmability | documented only (the ZMQ monitor protocol, fully specified in open source) | partial — a spec-built server drove the reference IDE's live monitor end-to-end (G-4, 2026-11-13) | partial (G-4) |
 | C7 Instrument integration | n/a (a behavior-tree IDE, not instrument-bound) | n/a | n/a |
-| C8 User-facing application | partial — the vendor app is documented as behavioral reference for the v4 project load, log playback, and v3 mode-switch (kickoff WP3) | none | none |
+| C8 User-facing application | partial — the vendor app is documented as behavioral reference for the v4 project load, log playback, and v3 mode-switch (kickoff WP3), and as the live client in the G-4 interop proof, where its monitor UI rendered the served tree, animated live transitions, and decoded the status encodings | none | none |
 | C9 Replacement coverage | not yet measurable | — | — |
 
 ## Reference environment
@@ -241,8 +299,9 @@ coverage sketch — no enumerated feature set exists yet.
 - **Fixture sources:** (a) the 15 files embedded in the vendor binary —
   banked privately with provenance; (b) self-authored `.btproj`/tree files
   round-tripped through the reference IDE; (c) a `.btlog` generated purely
-  from the pinned public grammar; (d) a live `Groot2Publisher` session
-  recorded for the ZMQ interop work package.
+  from the pinned public grammar; (d) the G-4 interop session — the
+  reference IDE connected as a live client to a spec-built monitor
+  server, its rendered monitor and Transitions panel captured.
 - **Recording:** file hashes per saved fixture; header/record inventory per
   grade; decoded transitions compared against the writer's own output; the
   reference IDE's own output captured alongside.
@@ -267,9 +326,9 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
 | G-1 | `.btproj` exact save-shape: save-as from the reference IDE, byte-diff against a banked sample; enumerate the Groot2-only attributes (`editable`, `<description>`, any others) and the per-project settings block | C2/C3 | byte-diff clean; the Groot2 extension attributes enumerated | **done 2026-11-13** — result in the findings above |
 | G-2 | The recording-container question: does the reference IDE's own "save log" produce a plain `.btlog`, or a Groot2-side wrapper? (The bundled zstd is the hint.) | C2 | a saved log, hex-inspected against the pinned grammar | next |
 | G-3 | Breakpoints & fault-injection behavior — the two flagship PRO features. Needs a PRO license, or the free-tier boundary observed to the limit (does the UI surface them, is the node cap the only gate, does the ZMQ hook path respond when armed from an external client) | C5/C6 | recorded breakpoint arm/disarm/clear cycle; fault-injection substitution observed | needs-license (or free-tier-boundary observation) |
-| G-4 | ZMQ live-monitor interop: an independent client (REQ/SUB to 1667/1668) drives a real `Groot2Publisher` and a live reference IDE session side by side; pin the polling cadence, the reconnect behavior, and whether the reference IDE ever sends on the PUB socket beyond listening | C6/C8 | an independent monitor client renders a live session identically to the reference IDE | next |
+| G-4 | ZMQ live-monitor interop, proven end-to-end: a server built purely from the public spec (all 12 request tags, the status-buffer idle encoding, blackboards, hooks, recording) driven the reference IDE's monitor — tree rendered, transitions animated, the Transitions panel decoded the status encodings (incl. `10+prev`, 11–14). The client's status-validation bounds established: accepts 0–4 and 11–14, rejects all else (notably byte 10, which is unreachable in a conformant stream); a request-mode mismatch stacks error dialogs (296 observed) instead of a clean refusal | C6/C8 | the reference IDE connected as a live client to the spec-built server: tree, live transitions, and status decoding all correct; thousands of requests, zero server-side exceptions | **done 2026-11-13** — result in the findings above |
 | G-5 | v3-compat mode: the full v3 project load (not just the mode switch), the "(V3 Compatibility)" retitling behavior, and what the IDE changes on save after the switch | C3/C5 | the v3 project round-trips through the reference IDE without losing the mode | next |
-| G-6 | Free-tier boundary map: exactly what the 20-node cap gates, and whether any other feature is licensed-gated at the protocol level (as opposed to the UI) | C2/C8 | recorded cap behavior at 19/20/21 nodes | next |
+| G-6 | Free-tier boundary map: exactly what the 20-node cap gates, and whether any other feature is licensed-gated at the protocol level (as opposed to the UI). Partially informed by the G-4 free-tier observations: blackboard visualization absent from the free-tier UI (PRO-gated), breakpoint feature PRO-gated (upgrade dialog on trigger), Record control present with log export | C2/C8 | recorded cap behavior at 19/20/21 nodes | next (partially informed) |
 
 ## Open questions / blockers (ranked)
 
@@ -282,11 +341,16 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
    features are the least-specified surface and have zero open
    implementations. Needs a PRO license, or the free-tier boundary mapped
    carefully enough to observe the behavior (G-3).
-3. **ZMQ live-monitor interop** — the open-source side pins the *server*,
-   not the *client*: the reference IDE's polling cadence, reconnect
-   behavior, and any traffic on the PUB socket beyond listening are
-   client-side choices we have to match closely enough to be compatible
-   (G-4).
+3. **ZMQ live-monitor client behavior** — the open-source side pins the
+   *server*, not the *client*: the reference IDE's exact polling cadence,
+   its reconnect back-off, and any traffic it sends on the PUB socket
+   beyond listening remain to be quantified. G-4 (2026-11-13) removed the
+   interop risk: a spec-built server drove the reference IDE's monitor
+   end-to-end (tree rendered, transitions animated, status encodings
+   decoded), and the client's status-validation bounds are established as
+   observed behavior (accepts 0–4 and 11–14, rejects all else, notably
+   byte 10; a mode mismatch stacks error dialogs) — see the findings
+   above.
 4. **v3-compat mode depth** — what the reference IDE does differently after
    the mode switch, and whether it re-writes the project in the v4 shape on
    save (G-5).
