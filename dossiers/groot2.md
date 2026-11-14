@@ -7,7 +7,7 @@
 
 - **Target:** Groot2 (Auryn Robotics) — the proprietary integrated development
   environment for the open-source BehaviorTree.CPP behavior-tree ecosystem
-- **Status:** research · **Last updated:** 2026-11-13 (G-3 breakpoint/fault-injection surface mapped via the PRO tier)
+- **Status:** research · **Last updated:** 2026-11-14 (G-5 v3-compat mode resolved and G-6 free-tier boundary map compiled — the campaign's work packages are complete)
 - **One-line objective:** an independent Groot2-*compatible* behavior-tree IDE
   that unifies the three lives of a tree — authored (`.btproj`), executing
   (ZMQ monitor), and recorded (`.btlog`) — over the publicly specified
@@ -293,6 +293,168 @@ free tier, offering a **log export** on stop. So the free-tier gate is
 not a single node-count check — some features are gated by *absence from
 the UI*, while others (record/export) remain present.
 
+### G-5 — the v3-compat mode, resolved (2026-11-14)
+
+Work package G-5 is **DONE** (2026-11-14). The v3-compat surface was first
+pinned from the open-source side (the BehaviorTree.CPP 3.x wire, file and
+XML dialects — the v3 counterpart of the 4.9.0 compatibility-surface
+study), then three live rounds were run: the reference IDE (Groot2 v1.10.0)
+as client against reference servers built by the campaign, in V3
+Compatibility mode and in V4 mode.
+
+**Headline: the monitor wire is v4 in both modes; V3 Compatibility is an
+editor-side switch — one wire protocol, two XML dialects.**
+
+- **The v3-protocol server was rejected.** A reference server speaking the
+  v3 wire exactly (the v3 publisher: REP answering with the tree
+  flatbuffer on every request, the v3 binary status/transition stream on
+  the v3 PUB socket) was **rejected by the V3-mode client** — no render,
+  no animation. Observed connect behavior shows why: in V3 mode the client
+  dials **REQ on the REP port and SUB on REP+1 — the v4 port layout —
+  regardless of mode**. The v3 wire's sockets and grammars never meet the
+  client's sockets, in either mode.
+- **The control experiment connected and animated.** A v4-wire reference
+  server whose FULLTREE payload was the **v3-dialect tree XML**
+  (`BTCPP_format="3"`, the v3 node set) connected **instantly and
+  animated** in V3 mode — and rendered identically in V4 mode. The mode
+  switch changes the dialect the editor serves and accepts, not the wire.
+- **The hybrid was refuted.** A hybrid reference server (v4 REQ + v3-
+  dialect XML on the REQ side, **v3 binary frames** on the PUB socket)
+  connected and rendered via the v4 REQ half — one FULLTREE on connect,
+  ~10 Hz STATUS polling for the session, a clean remove-all-hooks teardown
+  on close — but **every v3-binary PUB frame was rejected** ("Invalid
+  monitor notification format", ~1474 times over ~45 s) with zero display
+  animation from the PUB stream. Live-state animation rides the STATUS
+  replies, so the PUB half was never needed for the display.
+
+**THE CONCLUSION for the reconstruction:** a compatible monitor needs
+**ONE wire protocol** (the v4 publisher surface, in both editor modes) and
+**TWO XML dialects** (v4 and v3 — `SetBlackboard`, `SubTree`/
+`SubTreePlus`, `BTCPP_format="3"`, which the v3 parser accepts but does
+not enforce). A v3 robot talking the v3 binary wire needs a **translator**
+between its publisher and the client — the same reason the community's v3
+monitor ships its own translation layer.
+
+**NEEDS-OBSERVATION corner:** the V3-mode *notification* (SUB) parse
+rejected both observed frame formats — the v4 notification style and the
+v3 binary stream. What satisfies it is unknown, and practically
+irrelevant: V4 mode handles notifications, and live animation does not
+depend on the PUB socket.
+
+**v3 save-side findings (observed in the live round).** Saving in V3 mode
+from the reference IDE: fresh saves **declare `BTCPP_format="3"`**; the
+serializer **preserves `SubTree` spelling** — it never translates to
+`SubTreePlus`; fresh saves embed **zero `TreeNodesModel` entries** — the
+built-in models are not persisted (a significant serializer behavior: a
+compatible implementation must reproduce the drop, and only models loaded
+from included files get embedded); the default new-file name is
+**`untitled_v3_1`** (v4: `untitled_1`).
+
+### G-6 — the free-tier boundary map, compiled (2026-11-14)
+
+Work package G-6 is **DONE** (2026-11-14) as a compiled boundary map:
+exactly what the free tier's 20-node cap gates, and whether anything else
+is licensed-gated at the protocol level rather than the UI. The compilation
+covers the G-4 free-tier interop session, the G-2 recording session (both
+on the free tier), the G-3 PRO-trial round on the other side of the line,
+and the vendor's published tier description as recorded in the
+compatibility-surface study and the version table below. No new
+observation was taken; the gate strings not yet in the record are
+NEEDS-OBSERVATION, not banked facts.
+
+**Headline: the free/PRO line is a product decision at the UI level, not a
+protocol boundary.** The cap is not a single 20-node gate: some PRO
+features are gated by **absence from the UI** (blackboard visualization —
+there is no blackboard element in the free-tier monitor UI at all, while
+the protocol still serves blackboard dumps), others by an **upgrade
+dialog** (breakpoints — not armable; the dialog reads *"To unlock this
+feature, please upgrade to the PRO version of Groot2."*), and a third set
+remains present and functional on free (record/export — the Record control
+is toggleable, offers export on stop, and the free tier's own writer
+declared `FileLogger2 Log file (*.btlog)` unmodified).
+
+**The boundary table (free tier, Groot2 v1.10.0, observed):**
+
+| Capability | Free tier, observed | Gate shape |
+|---|---|---|
+| Editor & project authoring | full — every G-1 save-and-byte-diff run performed from the free-tier IDE | free |
+| Multi-tree `.btproj` load | the vendor's own 7-tree, 10-custom-model v4 project loads and renders | free |
+| v3 compatibility mode | the "Switch to V3" mode switch and "(V3 Compatibility)" retitling work | free |
+| `.btlog` replay | a public-grammar log plays back — 16 transitions, timestamps exact | free |
+| `.btlog` record + export | Record control present and toggleable; export offered on stop; the IDE's own writer produced a clean 196-transition recording | free |
+| Live monitor | full interop — tree rendered exactly, transitions animated over thousands of requests, status encodings decoded by the IDE's own Transitions panel | free, under the cap |
+| Monitor/log node cap | per the vendor's published tier description; its enforcement at the edge not yet exercised | **20 nodes** — **NEEDS-OBSERVATION** at 19/20/21 nodes |
+| Blackboard visualization | absent from the free-tier monitor UI (not disabled; the protocol still serves dumps) | PRO by absence |
+| Breakpoints | not armable; the PRO-upgrade dialog is presented on trigger (the ZMQ hook path is not reachable from the free-tier UI) | PRO by dialog |
+| Node search | not exercised on free | PRO per the tier description — gate text **NEEDS-OBSERVATION** |
+| Transitions limit | a 500-transition free-tier limit is asserted in the G-6 brief but appears in no banked log; the largest observed recording is 196 transitions | unverified — **NEEDS-OBSERVATION** |
+
+**The PRO side of the line (ESTABLISHED).** The vendor's published tier
+description puts **five** things behind PRO: **breakpoints
+(interactive mode)**, **fault injection (Replace Node, Success |
+Failure)**, **blackboard visualization**, **node search**, and the
+**uncapped monitor** (free caps the monitor and log visualizer at 20
+nodes). Two of the five were exercised end-to-end under the trial
+(G-3 — the complete wire lifecycle of both is banked there); the
+blackboard's protocol half is exercised on the server side (the `'B'`
+dump, MessagePack-JSON — G-4).
+
+**The trial route — the reference-license path (ESTABLISHED).** The PRO
+tier was reached the vendor's own way: the **free 30-day PRO trial**,
+started from the preferences dialog — one click, no payment, no
+circumvention, no key cracking. Observed activation behavior:
+
+- **Activation is an online check with a short bounded wait** — the
+  application's own log at first PRO-tier start (2026-11-13): `[STARTUP]
+  Waiting for license activation (max 5s)...` followed by `[STARTUP]
+  License activation completed`.
+- **The trial re-validates locally by default.** With the vendor endpoints
+  unreachable, the activated application kept working: license state is
+  held and checked locally between contacts — machine-bound license state
+  (a fingerprint at the licensing layer; the fingerprint itself was not
+  observed, and the record says no more than that).
+- **Days-left indicator: NEEDS-OBSERVATION** — asserted in the G-6 brief,
+  present in no banked log; the trial round's license-tab capture can be
+  transcribed to settle it.
+
+**Pricing context (ESTABLISHED, cited).** PRO is **€590/yr, sold as a
+floating license** — the vendor's public product page and README
+changelog, as recorded in the compatibility-surface study and carried in
+the version table's v1.10.0 row.
+
+**What the boundary means for the reconstruction.** Because the
+compatibility surface is specified almost entirely on the open-source side
+of the wall, everything the free/PRO line gates, an independent
+implementation can simply provide — all of it. The two flagship PRO
+features are, on the wire, two requests the public protocol fully
+specifies (`HOOK_INSERT` / `HOOK_REMOVE`, plus the one-time
+`BREAKPOINT_REACHED` publish), and their semantics are
+**server-authoritative**: the reference client never sent a
+`BREAKPOINT_UNLOCK` against a spec-conformance server, so pause-or-not is
+whatever the server's pre-tick callback decides (G-3). The blackboard the
+free tier hides is a standard protocol dump the reference interop server
+already serves (G-4). The 20-node cap sits far below the protocol's own
+ceiling — `node_uid` is `uint16`, i.e. up to 65,535 nodes. The free/PRO
+line is therefore a **reimplementation decision**, not a technical wall:
+compatibility requires matching the publicly specified wire and file
+behavior, not reproducing the gate, and which features to gate (if any)
+is ours to choose.
+
+**Remaining NEEDS-OBSERVATION:** (1) the **19/20/21-node cap-edge
+sweep** — G-6's verification target, the last unexercised cell of the
+table; (2) the **unbanked gate strings** — four vendor strings carried in
+the G-6 brief appear in no banked observation log and are quarantined
+here: a monitor-cap dialog ("The free version of Groot2 can monitor only
+trees with 20 or less nodes."), a free-tier limits line ("…limited to 500
+transitions and trees not larger than 20 Nodes." — reads as vendor page
+copy rather than a dialog), a second breakpoint-dialog phrasing
+("Adding a breakpoint to the tree requires the PRO version." — **conflicts**
+with the banked G-4 string and must be reconciled by observation,
+plausibly a different trigger path surfacing a different dialog), and a
+search gate text ("Disabled. Searching requires the PRO version."). All
+four are to be captured (or discarded) in the next free-tier session,
+alongside the cap-edge sweep.
+
 ## A. Product & version archaeology
 
 | Version | Released | Edition/modules | OS/arch | Notes | Status |
@@ -344,8 +506,10 @@ decoded result and project-state change. The graded-fixture ladder has its
 first four rungs from the kickoff plus G-1 (the vendor sample corpus, the
 pinned-grammar log, the v3↔v4 mode-switch project, and the pinned
 `.btproj` save-shape) and the reference IDE's own saved recording (G-2 —
-the plain-format result above); the next grade is the v3-compat mode depth
-(G-5).
+the plain-format result above); the v3-compat grade (G-5) is resolved
+(2026-11-14) — the wire does not change with the mode, so the remaining
+graded fixtures are the v3 dialect files themselves (the v3 project and
+the v3 log/flatbuffer surface, pinned in the G-5 findings above).
 
 ## E. Reconstruction architecture — EARLY DECISIONS
 
@@ -384,11 +548,13 @@ Groot2 **v1.10.0 free tier** and BehaviorTree.CPP **4.9.0** (with a 4.11
 cross-check once the delta work is done). Evidence units: the vendor sample
 corpus (15 files) as load fixtures; a pinned-grammar `.btlog` round-tripped
 against the 4.9.0 writer and played back in the reference IDE; the v3↔v4
-mode-switch project as a compatibility-mode fixture; a `.btproj` byte-diff
-against a banked sample after a save-as (work package G-1); the G-4
-interop proof — the reference IDE connected as a live client to a
-spec-built monitor server (tree rendered, transitions animated, status
-encodings decoded by the IDE's own Transitions panel). "Full support"
+mode-switch project as a compatibility-mode fixture (re-verified in V3
+mode by G-5, 2026-11-14: the v4 wire carries the v3-dialect XML and
+animates identically in both modes); a `.btproj` byte-diff against a
+banked sample after a save-as (work package G-1); the G-4 interop proof —
+the reference IDE connected as a live client to a spec-built monitor
+server (tree rendered, transitions animated, status encodings decoded by
+the IDE's own Transitions panel). "Full support"
 requires an enumerated feature set + passing reference tests, never the
 absence of known bugs.
 
@@ -400,14 +566,14 @@ coverage sketch — no enumerated feature set exists yet.
 | Capability | Reference (observed?) | Implementation | Verification |
 |------------|----------------------|----------------|--------------|
 | C1 Acquisition & execution | partial — free full v1.10.0 installed and operated; sample corpus banked with provenance | n/a | n/a |
-| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact; a recording saved by the reference IDE itself parses end to end with zero errors by the pinned-grammar reader — G-2, 2026-11-13); `.btproj` save-shape verified bidirectionally at the container and serialization level (G-1, 2026-11-13); live-monitor status records verified against the reference IDE's own Transitions panel, including the `10+prev` IDLE encodings (G-4, 2026-11-13) | none | partial (kickoff WP1–WP2; G-1; G-2; G-4) |
-| C3 Document compatibility | partial — the `.btproj` save-shape is pinned by save-and-byte-diff (G-1): serializer delta, include-rewrite rule, and V3-vs-V4 behavior all established | none | partial (G-1) |
+| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact; a recording saved by the reference IDE itself parses end to end with zero errors by the pinned-grammar reader — G-2, 2026-11-13); `.btproj` save-shape verified bidirectionally at the container and serialization level (G-1, 2026-11-13); live-monitor status records verified against the reference IDE's own Transitions panel, including the `10+prev` IDLE encodings (G-4, 2026-11-13); the v3 file/log/flatbuffer surface pinned from source, and the v3-vs-v4 wire relationship resolved experimentally (G-5, 2026-11-14) | none | partial (kickoff WP1–WP2; G-1; G-2; G-4; G-5) |
+| C3 Document compatibility | partial — the `.btproj` save-shape is pinned by save-and-byte-diff (G-1): serializer delta, include-rewrite rule, and V3-vs-V4 behavior all established; the v3 XML dialect pinned (G-5): `SetBlackboard`, `SubTree`/`SubTreePlus`, `BTCPP_format` accepted but not enforced, plus the observed V3 save behavior (declares `BTCPP_format="3"`, preserves `SubTree` spelling, embeds zero `TreeNodesModel` entries, default name `untitled_v3_1`) | none | partial (G-1; G-5) |
 | C4 Computation | n/a (a behavior-tree IDE; the C++ library is the compute reference) | none | none |
-| C5 Workflow semantics | awaiting research (the v3↔v4 mode switch is the first recorded) | none | none |
-| C6 Programmability | documented only (the ZMQ monitor protocol, fully specified in open source) | partial — a spec-built server drove the reference IDE's live monitor end-to-end (G-4, 2026-11-13) | partial (G-4) |
+| C5 Workflow semantics | partial — the v3↔v4 mode switch is resolved (G-5, 2026-11-14): the monitor wire is v4 in both modes; V3 Compatibility is editor-side (XML dialect, node models, serializer), so a compatible IDE needs one wire protocol and two XML dialects; the G-6 boundary map is compiled (2026-11-14): the free/PRO line is a product decision at the UI level, not a protocol boundary | none | partial (G-5; G-6) |
+| C6 Programmability | documented only (the ZMQ monitor protocol, fully specified in open source) | partial — a spec-built server drove the reference IDE's live monitor end-to-end (G-4, 2026-11-13), in both editor modes (G-5, 2026-11-14) | partial (G-4; G-5) |
 | C7 Instrument integration | n/a (a behavior-tree IDE, not instrument-bound) | n/a | n/a |
-| C8 User-facing application | partial — the vendor app is documented as behavioral reference for the v4 project load, log playback, and v3 mode-switch (kickoff WP3), and as the live client in the G-4 interop proof, where its monitor UI rendered the served tree, animated live transitions, and decoded the status encodings | none | none |
-| C9 Replacement coverage | not yet measurable | — | — |
+| C8 User-facing application | partial — the vendor app is documented as behavioral reference for the v4 project load, log playback, and v3 mode-switch (kickoff WP3), as the live client in the G-4 interop proof (its monitor UI rendered the served tree, animated live transitions, and decoded the status encodings), and as the live client of the G-5 v3-mode wire experiments (connected and animated on the v4 wire in both modes; its V3-mode notification parse rejected both observed frame formats — NEEDS-OBSERVATION) | none | none |
+| C9 Replacement coverage | not yet measurable (the work-package table is closed; the matrix above is the coverage sketch against which an enumerated feature set would be measured) | — | — |
 
 ## Reference environment
 
@@ -426,7 +592,11 @@ coverage sketch — no enumerated feature set exists yet.
   reference IDE's own output captured alongside.
 - **Runner:** one input varied at a time (node count across the free-tier
   cap, v3 vs v4, with/without `BTCPP_format`, with/without `TreeNodesModel`,
-  breakpoint armed/disarmed).
+  breakpoint armed/disarmed); the G-5 wire experiments (2026-11-14)
+  varied the monitor grammar — v3 wire vs v4 wire, v3-dialect vs v4-dialect
+  XML, v3-binary notification frames — and the G-6 boundary inputs were
+  taken from the free-tier save/export artifacts and the PRO-trial
+  license-tab capture.
 
 ## Legal preconditions
 
@@ -446,8 +616,8 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
 | G-2 | The recording-container question: does the reference IDE's own "save log" produce a plain `.btlog`, or a Groot2-side wrapper? (The bundled zstd is the hint.) | C2 | a saved log, hex-inspected against the pinned grammar | **done 2026-11-13** — the recording is the plain public format: a live recording captured from the reference IDE parses end to end with zero errors by the pinned-grammar reader (196 transitions, tree XML identical to the served tree); the IDE's own save dialog declares `FileLogger2 Log file (*.btlog)`; the zstd container hypothesis is closed for the log format |
 | G-3 | Breakpoints & fault-injection behavior — the two flagship PRO features. Needs a PRO license, or the free-tier boundary observed to the limit (does the UI surface them, is the node cap the only gate, does the ZMQ hook path respond when armed from an external client) | C5/C6 | recorded breakpoint arm/disarm/clear cycle; fault-injection substitution observed | **done 2026-11-13** — the PRO surface is mapped (see the G-3 findings above): run under the vendor's free 30-day PRO trial, against the spec-conformance monitor server with a correlated server-log census; breakpoints are server-authoritative per the open-source protocol, fault injection is a silent replace-mode hook, and removal is `Hook Config → None → OK` only |
 | G-4 | ZMQ live-monitor interop, proven end-to-end: a server built purely from the public spec (all 12 request tags, the status-buffer idle encoding, blackboards, hooks, recording) driven the reference IDE's monitor — tree rendered, transitions animated, the Transitions panel decoded the status encodings (incl. `10+prev`, 11–14). The client's status-validation bounds established: accepts 0–4 and 11–14, rejects all else (notably byte 10, which is unreachable in a conformant stream); a request-mode mismatch stacks error dialogs (296 observed) instead of a clean refusal | C6/C8 | the reference IDE connected as a live client to the spec-built server: tree, live transitions, and status decoding all correct; thousands of requests, zero server-side exceptions | **done 2026-11-13** — result in the findings above |
-| G-5 | v3-compat mode: the full v3 project load (not just the mode switch), the "(V3 Compatibility)" retitling behavior, and what the IDE changes on save after the switch | C3/C5 | the v3 project round-trips through the reference IDE without losing the mode | next |
-| G-6 | Free-tier boundary map: exactly what the 20-node cap gates, and whether any other feature is licensed-gated at the protocol level (as opposed to the UI). Partially informed by the G-4 free-tier observations: blackboard visualization absent from the free-tier UI (PRO-gated), breakpoint feature PRO-gated (upgrade dialog on trigger), Record control present with log export | C2/C8 | recorded cap behavior at 19/20/21 nodes | next (partially informed) |
+| G-5 | v3-compat mode: the full v3 project load (not just the mode switch), the "(V3 Compatibility)" retitling behavior, and what the IDE changes on save after the switch | C3/C5 | the v3 project round-trips through the reference IDE without losing the mode | **done 2026-11-14** — the headline: the monitor wire is v4 in both modes, "V3 Compatibility" is editor-side (one wire protocol, two XML dialects); v3 save-side behavior established; the V3-mode SUB notification parse is the NEEDS-OBSERVATION corner |
+| G-6 | Free-tier boundary map: exactly what the 20-node cap gates, and whether any other feature is licensed-gated at the protocol level (as opposed to the UI). Informed by the G-4 free-tier observations: blackboard visualization absent from the free-tier UI (PRO-gated), breakpoint feature PRO-gated (upgrade dialog on trigger), Record control present with log export | C2/C8 | recorded cap behavior at 19/20/21 nodes | **done 2026-11-14** — the boundary map compiled (headline: the free/PRO line is a product decision at the UI level, not a protocol boundary); remaining: the 19/20/21-node cap-edge sweep and the unbanked gate strings (NEEDS-OBSERVATION) |
 
 ## Open questions / blockers (ranked)
 
@@ -463,15 +633,31 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
    client vocabulary: the IDE sends nothing on the PUB side beyond the
    six request kinds, and never sends `BREAKPOINT_UNLOCK` (breakpoint
    semantics are server-authoritative per the open-source protocol).
-2. **v3-compat mode depth** — what the reference IDE does differently after
-   the mode switch, and whether it re-writes the project in the v4 shape on
-   save (G-5).
-3. **Free-tier boundary map** — the exact feature set gated by the 20-node
-   cap versus the PRO gate, at the protocol level rather than the UI level
-   (G-6). Partially informed by the G-4 free-tier observations: blackboard
-   visualization is absent from the free-tier UI (PRO-gated), breakpoints are
-   PRO-gated (upgrade dialog on trigger), and the Record control is present
-   with log export (G-2 exercised it on the free tier).
+   G-5 (2026-11-14) adds the mode dimension: the client dials the v4
+   port layout (REQ + SUB on REP+1) in **both** editor modes — the mode
+   switch never changes the wire — and its V3-mode SUB *notification*
+   parse rejected both observed frame formats (v4-style and v3-binary;
+   "Invalid monitor notification format", ~1474 occurrences over ~45 s).
+   What satisfies that parse is NEEDS-OBSERVATION, and practically
+   irrelevant: V4 mode handles notifications, and live animation rides
+   the STATUS replies, not the PUB socket.
+2. ~~**v3-compat mode depth**~~ — **resolved by G-5 (2026-11-14):** the
+   monitor wire is v4 in both modes; V3 Compatibility is editor-side (the
+   XML dialect, the node models, the serializer). One wire protocol, two
+   XML dialects; a v3 robot needs a translator. The v3 save-side behavior
+   is established (fresh saves declare `BTCPP_format="3"`, preserve
+   `SubTree` spelling, embed zero `TreeNodesModel` entries, default name
+   `untitled_v3_1`). See the G-5 findings above.
+3. **Free-tier boundary map** — **compiled by G-6 (2026-11-14):** the
+   free/PRO line is a product decision at the UI level, not a protocol
+   boundary (the gate shapes: PRO-by-absence for blackboard visualization,
+   PRO-by-dialog for breakpoints, free and present for record/export; the
+   five PRO-gated items per the vendor's published tier description).
+   Two NEEDS-OBSERVATION items remain: the **19/20/21-node cap-edge
+   sweep** (the last unexercised cell of the table), and the **unbanked
+   gate strings** — four vendor strings in the G-6 brief that appear in
+   no banked log, including a breakpoint phrasing that conflicts with the
+   banked G-4 string. See the G-6 findings above.
 
 (Formerly ranked first: breakpoint and fault-injection behavior. Resolved
 by G-3 on 2026-11-13 — see the findings above; the result drops G-3 from
@@ -485,3 +671,13 @@ list.)
 
 (Formerly ranked first: the exact `.btproj` save-shape. Resolved by G-1 on
 2026-11-13 — see the findings above; the result drops G-1 from the open list.)
+
+(Formerly ranked second: the free-tier boundary map. Compiled by G-6 on
+2026-11-14 — the map is in the findings above; the two remaining items are
+the 19/20/21-node cap-edge sweep and the unbanked gate strings, both
+NEEDS-OBSERVATION.)
+
+(Formerly ranked second: v3-compat mode depth. Resolved by G-5 on
+2026-11-14 — see the findings above; the result drops G-5 from the open
+list, leaving only the NEEDS-OBSERVATION corners (the V3-mode SUB
+notification parse; the G-6 cap-edge sweep and gate strings).)
