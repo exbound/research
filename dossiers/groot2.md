@@ -7,7 +7,7 @@
 
 - **Target:** Groot2 (Auryn Robotics) — the proprietary integrated development
   environment for the open-source BehaviorTree.CPP behavior-tree ecosystem
-- **Status:** research · **Last updated:** 2026-11-13 (G-4 live-monitor interop proven)
+- **Status:** research · **Last updated:** 2026-11-13 (G-2 recording container resolved — the IDE saves the plain public format)
 - **One-line objective:** an independent Groot2-*compatible* behavior-tree IDE
   that unifies the three lives of a tree — authored (`.btproj`), executing
   (ZMQ monitor), and recorded (`.btlog`) — over the publicly specified
@@ -122,6 +122,56 @@ The evidence (all saved artifacts, byte-for-byte, with the full method and
 per-file diffs) is banked in the private campaign repository; the dossier
 records the established result here, per the public/private wall.
 
+### G-2 — the recording-container question, resolved (2026-11-13)
+
+Work package G-2 is **DONE** (2026-11-13), and it removes the single largest
+remaining format risk for a log-replay replacement: **the reference IDE's
+monitor recording is the plain public `.btlog` format, end to end.** The
+zstd-container hypothesis is **closed for the log format** — the zstd
+bundled in the AppImage serves something else in the application, not the log
+file.
+
+**Method.** A **live recording was captured from the reference IDE itself**:
+Groot2 v1.10.0 (free tier) connected as a live client to the spec-conformance
+monitor server (the same spec-built server that proved the G-4 interop), with
+the known-content scenario animating in the monitor. The IDE's own Record
+control was toggled on and off; its dialog-driven save produced the recording
+on disk. The IDE's writer was thus **observed, not inferred**.
+
+**ESTABLISHED — the recording is a plain spec-conformant `.btlog`:**
+
+- **The recording's own save dialog declares the format.** The Record toggle
+  opens a "Save Log file as…" dialog *before* recording starts, and the
+  dialog's file-type filter itself names the format: `FileLogger2 Log file
+  (*.btlog)` — the FileLogger2 logger of BehaviorTree.CPP, unmodified.
+- **A captured recording parses with zero errors by an independent reader.**
+  A reader built **purely from the pinned public grammar** (the campaign's
+  own `.btlog` tool, per the 4.9.0 FileLogger2 source) read the captured
+  recording end to end: **196 transitions, zero parse errors**, file ends
+  exactly on a record boundary. Its embedded tree XML **matches the served
+  tree exactly**, and the transition timestamps are monotonic within a tick
+  (~200 µs apart) across the scenario's ~3-second cycles over roughly ten
+  seconds of live monitoring.
+- **No container bytes.** The file begins with the 18-byte ASCII magic
+  `BTCPP4-FileLogger2` at offset 0 — the 19th byte is the protocol version,
+  and the 4-byte little-endian XML length follows at offset 19 — then the
+  tree XML, then the binary transition records. No compression magic
+  anywhere: the plain grammar is intact from offset 0.
+
+**Record-flow behavior (compatibility-relevant, observed).** A compatible
+recording implementation should match the IDE's flow as well as its bytes:
+
+- the **Record toggle opens the save dialog before recording starts** — the
+  destination path is chosen first;
+- the chosen file is **created at 0 bytes and fully buffered during
+  recording**, then **flushed atomically when Record is toggled off** — a
+  file on disk mid-recording is empty by design, so incremental or partial
+  files are not the reference behavior.
+
+The recording artifact, its hash, the first-bytes analysis, the reader
+output, and the full method are banked in the private campaign tree; the
+dossier records the established result here, per the public/private wall.
+
 ### G-4 — the live-monitor interop, proven end-to-end (2026-11-13)
 
 Work package G-4 is **DONE** (2026-11-13), and it inverts the usual
@@ -228,7 +278,9 @@ Executable reference tests, given input + parameters + version → exact
 decoded result and project-state change. The graded-fixture ladder has its
 first four rungs from the kickoff plus G-1 (the vendor sample corpus, the
 pinned-grammar log, the v3↔v4 mode-switch project, and the pinned
-`.btproj` save-shape); the next grade is the recording-container question.
+`.btproj` save-shape) and the reference IDE's own saved recording (G-2 —
+the plain-format result above); the next grade is the v3-compat mode depth
+(G-5).
 
 ## E. Reconstruction architecture — EARLY DECISIONS
 
@@ -283,7 +335,7 @@ coverage sketch — no enumerated feature set exists yet.
 | Capability | Reference (observed?) | Implementation | Verification |
 |------------|----------------------|----------------|--------------|
 | C1 Acquisition & execution | partial — free full v1.10.0 installed and operated; sample corpus banked with provenance | n/a | n/a |
-| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact); `.btproj` save-shape verified bidirectionally at the container and serialization level (G-1, 2026-11-13); live-monitor status records verified against the reference IDE's own Transitions panel, including the `10+prev` IDLE encodings (G-4, 2026-11-13) | none | partial (kickoff WP1–WP2; G-1; G-4) |
+| C2 Data compatibility | partial — `.btlog` verified bidirectionally at the container level (writer/reader round-trip PASS against the 4.9.0 writer; a pinned-grammar log loads and plays back in the reference IDE with 16 transitions exact; a recording saved by the reference IDE itself parses end to end with zero errors by the pinned-grammar reader — G-2, 2026-11-13); `.btproj` save-shape verified bidirectionally at the container and serialization level (G-1, 2026-11-13); live-monitor status records verified against the reference IDE's own Transitions panel, including the `10+prev` IDLE encodings (G-4, 2026-11-13) | none | partial (kickoff WP1–WP2; G-1; G-2; G-4) |
 | C3 Document compatibility | partial — the `.btproj` save-shape is pinned by save-and-byte-diff (G-1): serializer delta, include-rewrite rule, and V3-vs-V4 behavior all established | none | partial (G-1) |
 | C4 Computation | n/a (a behavior-tree IDE; the C++ library is the compute reference) | none | none |
 | C5 Workflow semantics | awaiting research (the v3↔v4 mode switch is the first recorded) | none | none |
@@ -301,7 +353,9 @@ coverage sketch — no enumerated feature set exists yet.
   round-tripped through the reference IDE; (c) a `.btlog` generated purely
   from the pinned public grammar; (d) the G-4 interop session — the
   reference IDE connected as a live client to a spec-built monitor
-  server, its rendered monitor and Transitions panel captured.
+  server, its rendered monitor and Transitions panel captured;
+  (e) a `.btlog` saved by the reference IDE's own Record control,
+  recorded live against the spec-built monitor server (G-2).
 - **Recording:** file hashes per saved fixture; header/record inventory per
   grade; decoded transitions compared against the writer's own output; the
   reference IDE's own output captured alongside.
@@ -324,7 +378,7 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
 |----|-------|-----------|--------------|--------|
 | G-0 | Vendor sample corpus: 15 files, parse + include-resolve + instantiate; record the 3 vendor-generation regressions and the v3/v4 delta fixtures | C2/C3 | all 15 parse; includes resolve; the 3 throws recorded | **done 2026-11-13** |
 | G-1 | `.btproj` exact save-shape: save-as from the reference IDE, byte-diff against a banked sample; enumerate the Groot2-only attributes (`editable`, `<description>`, any others) and the per-project settings block | C2/C3 | byte-diff clean; the Groot2 extension attributes enumerated | **done 2026-11-13** — result in the findings above |
-| G-2 | The recording-container question: does the reference IDE's own "save log" produce a plain `.btlog`, or a Groot2-side wrapper? (The bundled zstd is the hint.) | C2 | a saved log, hex-inspected against the pinned grammar | next |
+| G-2 | The recording-container question: does the reference IDE's own "save log" produce a plain `.btlog`, or a Groot2-side wrapper? (The bundled zstd is the hint.) | C2 | a saved log, hex-inspected against the pinned grammar | **done 2026-11-13** — the recording is the plain public format: a live recording captured from the reference IDE parses end to end with zero errors by the pinned-grammar reader (196 transitions, tree XML identical to the served tree); the IDE's own save dialog declares `FileLogger2 Log file (*.btlog)`; the zstd container hypothesis is closed for the log format |
 | G-3 | Breakpoints & fault-injection behavior — the two flagship PRO features. Needs a PRO license, or the free-tier boundary observed to the limit (does the UI surface them, is the node cap the only gate, does the ZMQ hook path respond when armed from an external client) | C5/C6 | recorded breakpoint arm/disarm/clear cycle; fault-injection substitution observed | needs-license (or free-tier-boundary observation) |
 | G-4 | ZMQ live-monitor interop, proven end-to-end: a server built purely from the public spec (all 12 request tags, the status-buffer idle encoding, blackboards, hooks, recording) driven the reference IDE's monitor — tree rendered, transitions animated, the Transitions panel decoded the status encodings (incl. `10+prev`, 11–14). The client's status-validation bounds established: accepts 0–4 and 11–14, rejects all else (notably byte 10, which is unreachable in a conformant stream); a request-mode mismatch stacks error dialogs (296 observed) instead of a clean refusal | C6/C8 | the reference IDE connected as a live client to the spec-built server: tree, live transitions, and status decoding all correct; thousands of requests, zero server-side exceptions | **done 2026-11-13** — result in the findings above |
 | G-5 | v3-compat mode: the full v3 project load (not just the mode switch), the "(V3 Compatibility)" retitling behavior, and what the IDE changes on save after the switch | C3/C5 | the v3 project round-trips through the reference IDE without losing the mode | next |
@@ -332,16 +386,11 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
 
 ## Open questions / blockers (ranked)
 
-1. **The recording container** — whether the reference IDE's own saved log
-   is a plain `.btlog`/`.db3` or a Groot2-side wrapper. The bundled zstd is
-   the strongest hint of a wrapper, and this is the single largest remaining
-   format risk for a log-replay replacement. Resolvable by a hex-inspect of
-   a saved log (G-2).
-2. **Breakpoint and fault-injection behavior** — the two flagship PRO
+1. **Breakpoint and fault-injection behavior** — the two flagship PRO
    features are the least-specified surface and have zero open
    implementations. Needs a PRO license, or the free-tier boundary mapped
    carefully enough to observe the behavior (G-3).
-3. **ZMQ live-monitor client behavior** — the open-source side pins the
+2. **ZMQ live-monitor client behavior** — the open-source side pins the
    *server*, not the *client*: the reference IDE's exact polling cadence,
    its reconnect back-off, and any traffic it sends on the PUB socket
    beyond listening remain to be quantified. G-4 (2026-11-13) removed the
@@ -351,12 +400,21 @@ proprietary binary. No vendor trademarks — "reads Groot2 projects" /
    observed behavior (accepts 0–4 and 11–14, rejects all else, notably
    byte 10; a mode mismatch stacks error dialogs) — see the findings
    above.
-4. **v3-compat mode depth** — what the reference IDE does differently after
+3. **v3-compat mode depth** — what the reference IDE does differently after
    the mode switch, and whether it re-writes the project in the v4 shape on
    save (G-5).
-5. **Free-tier boundary map** — the exact feature set gated by the 20-node
+4. **Free-tier boundary map** — the exact feature set gated by the 20-node
    cap versus the PRO gate, at the protocol level rather than the UI level
-   (G-6).
+   (G-6). Partially informed by the G-4 free-tier observations: blackboard
+   visualization is absent from the free-tier UI (PRO-gated), breakpoints are
+   PRO-gated (upgrade dialog on trigger), and the Record control is present
+   with log export (G-2 exercised it on the free tier).
+
+(Formerly ranked first: the recording container. Resolved by G-2 on
+2026-11-13 — see the findings above; the result drops G-2 from the open
+list. Remaining format work: G-3 PRO-gated behaviors (license or boundary
+observation), G-5 v3-compat mode depth, and the G-6 free-tier boundary map
+(partially informed by the G-4 and G-2 free-tier observations).)
 
 (Formerly ranked first: the exact `.btproj` save-shape. Resolved by G-1 on
 2026-11-13 — see the findings above; the result drops G-1 from the open list.)
