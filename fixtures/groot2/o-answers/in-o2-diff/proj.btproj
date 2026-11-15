@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" BTCPP_version="4.9" project_name="O2D">
+  <include path="tree.xml"/>
+  <TreeNodesModel>
+    <Action ID="SayHello" editable="true">
+      <input_port name="message"/>
+    </Action>
+  </TreeNodesModel>
+</root>

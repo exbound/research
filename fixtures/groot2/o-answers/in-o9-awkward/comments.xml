@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- comment before root -->
+<root BTCPP_format="4">
+  <!-- comment before BehaviorTree -->
+  <BehaviorTree ID="Main">
+    <Sequence>
+      <AlwaysSuccess/>
+    </Sequence>
+  </BehaviorTree>
+  <!-- comment before TreeNodesModel -->
+  <TreeNodesModel>
+    <Action ID="X" editable="true"/>
+  </TreeNodesModel>
+</root>
+<!-- comment after root close -->

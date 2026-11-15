@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="Main">
+    <Sequence>
+      <PlainModel/>
+      <EditableModel msg="hi"/>
+      <PlainCondition/>
+    </Sequence>
+  </BehaviorTree>
+</root>
