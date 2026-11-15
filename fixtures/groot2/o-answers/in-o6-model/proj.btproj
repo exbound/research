@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" project_name="O6">
+  <include path="tree.xml"/>
+  <TreeNodesModel>
+    <Action ID="PlainModel">
+    </Action>
+    <Action ID="EditableModel" editable="true">
+      <description>My custom editable node</description>
+      <input_port name="msg"/>
+    </Action>
+    <Condition ID="PlainCondition" editable="true"/>
+  </TreeNodesModel>
+</root>

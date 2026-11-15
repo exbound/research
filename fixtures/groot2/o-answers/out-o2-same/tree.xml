@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      BTCPP_version="4.10">
+  <BehaviorTree ID="Main">
+    <Sequence>
+      <Script code="return true;"/>
+      <AlwaysSuccess/>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel/>
+
+</root>

@@ -455,6 +455,65 @@ search gate text ("Disabled. Searching requires the PRO version."). All
 four are to be captured (or discarded) in the next free-tier session,
 alongside the cap-edge sweep.
 
+### O-answers — the save-behavior open questions, answered (2026-11-15)
+
+The save-behavior open questions of the implementation spec — the
+O-items of its §7, the ones the G-1…G-6 findings left as "ESTABLISHED
+in part" — were measured in a dedicated 2026-11-15 session on
+Groot2 v1.10.0 PRO (BT.CPP target 4.10) against a self-authored
+fixture set, now published in this repository at
+[`fixtures/groot2/o-answers/`](../fixtures/groot2/o-answers/) with a
+full hash manifest and capture protocol. The findings, each with its
+fixture-file evidence:
+[`groot2-o-answers.md`](groot2-o-answers.md).
+
+**Headline results:**
+
+- **O-1 (stamp bytes) answered:** in a `.btproj` the stamp is inline
+  — `<root BTCPP_format="4" BTCPP_version="4.10"
+  project_name="…">` — in attribute order format, version,
+  project_name; in a tree file it is a **continuation line** of the
+  split root tag, 6-space indent. The full canonical tree-write style
+  (declaration, double quotes, 2-space indent, the models comment
+  block, single trailing LF) is pinned in the findings record.
+- **O-2 (existing stamp) answered:** a same-value stamp is preserved
+  verbatim; a different-minor stamp is normalized to the reference's
+  own version on write, pre-announced by a version-mismatch dialog
+  (exact text and choices recorded).
+- **O-4 (include rewriting) answered:** every include is **always**
+  flattened to its bare basename, destination-independent — refining
+  the G-1 finding, which had only seen same-directory includes.
+- **O-5 (single-tree save-as) answered:** a standalone tree saves as a
+  **bare tree file** (filename preserved, BehaviorTree ID preserved,
+  no project wrapper) — the "wrapper" behavior of G-1 applied to
+  saving a project that already contained the tree, not to a
+  standalone input.
+- **O-6 (TreeNodesModel properties) answered:** `editable="true"`
+  kept, `<description>` **dropped** (confirming the vendor-issue
+  report), entries re-sorted alphabetically, the model block embedded
+  into copied tree files, and a length-based attribute wrap observed
+  (threshold between 38 and 43 rendered characters — exact value
+  NEEDS-OBSERVATION).
+- **O-8 (unmodified save) answered — premise overturned:** the
+  per-file Save route rewrites the tree file **unconditionally**
+  (an unmodified tree is still rewritten to canonical form); the
+  project file is **never** written in place — only by Export.
+  Ctrl+S is unbound.
+- **O-9 (awkward XML) answered:** the reference is a **normalizing
+  writer** — none of the tested lexical properties (quoting,
+  declaration, character references, CRLF, missing trailing newline,
+  comments) survives a save; five of six variants round-trip to
+  byte-identical canonical output. The implementation's lossless
+  F5 save is therefore a genuinely different operation from the
+  reference-compatible F6 save.
+- **Recorded alongside:** the loader rejects an Action node with a
+  child ("An Action node must not have any child" — the as-authored
+  O-1/O-2 inputs hit this; corrected copies ran the measurements), and
+  the exact text and choices of the version-mismatch dialog.
+- **Still open:** O-3 (V3 `TreeNodesModel` rule, deferred to the
+  later editing milestone) and O-7 (reconnect back-off, non-blocking
+  timing property, not measured this session).
+
 ## A. Product & version archaeology
 
 | Version | Released | Edition/modules | OS/arch | Notes | Status |
