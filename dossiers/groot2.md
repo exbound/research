@@ -479,7 +479,8 @@ fixture-file evidence:
 - **O-2 (existing stamp) answered:** a same-value stamp is preserved
   verbatim; a different-minor stamp is normalized to the reference's
   own version on write, pre-announced by a version-mismatch dialog
-  (exact text and choices recorded).
+  (functional description of the choices; the verbatim vendor
+  dialog text was replaced with a paraphrase on 2026-11-15).
 - **O-4 (include rewriting) answered:** every include is **always**
   flattened to its bare basename, destination-independent — refining
   the G-1 finding, which had only seen same-directory includes.
@@ -490,10 +491,12 @@ fixture-file evidence:
   standalone input.
 - **O-6 (TreeNodesModel properties) answered:** `editable="true"`
   kept, `<description>` **dropped** (confirming the vendor-issue
-  report), entries re-sorted alphabetically, the model block embedded
-  into copied tree files, and a length-based attribute wrap observed
-  (threshold between 38 and 43 rendered characters — exact value
-  NEEDS-OBSERVATION).
+  report), entries re-sorted alphabetically. *(2026-11-15
+  correction: the earlier claim that the model block is embedded
+  into copied tree files, and the 38–43 char length-threshold claim
+  on attribute wrapping, are both retracted — see the O-6 section of
+  [`groot2-o-answers.md`](groot2-o-answers.md) for the refined
+  NEEDS-MEASUREMENT state.)*
 - **O-8 (unmodified save) answered — premise overturned:** the
   per-file Save route rewrites the tree file **unconditionally**
   (an unmodified tree is still rewritten to canonical form); the
@@ -508,11 +511,20 @@ fixture-file evidence:
   reference-compatible F6 save.
 - **Recorded alongside:** the loader rejects an Action node with a
   child ("An Action node must not have any child" — the as-authored
-  O-1/O-2 inputs hit this; corrected copies ran the measurements), and
-  the exact text and choices of the version-mismatch dialog.
+  O-1/O-2 inputs hit this; corrected copies ran the measurements),
+  and the version-mismatch dialog's functional choices (the verbatim
+  vendor text was replaced with a paraphrase on 2026-11-15).
 - **Still open:** O-3 (V3 `TreeNodesModel` rule, deferred to the
-  later editing milestone) and O-7 (reconnect back-off, non-blocking
-  timing property, not measured this session).
+  later editing milestone), O-7 (reconnect back-off, non-blocking
+  timing property, not measured this session), O-10 (attribute-wrap
+  rule for tree files — the O-6 wrap observations cannot separate an
+  attribute-count rule from a rendered-length threshold), O-14
+  (model-embedding rule for a project whose tree uses only some of
+  its declared models — the O-6 embedding claim is
+  NEEDS-MEASUREMENT until this settles it), and O-15 (the O-4
+  parent-relative include target `outside.xml` — **published
+  2026-11-15** in the fixture set, hash matching the recorded
+  MANIFEST row).
 
 ## A. Product & version archaeology
 
