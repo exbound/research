@@ -16,7 +16,7 @@
   master differs, noted.
 
 **Local tree** (vcpkg extract, used throughout):
-`/home/cam/vcpkg/buildtrees/behaviortree-cpp/src/4.9.0-d1db670a84.clean/`
+a local checkout of the BehaviorTree.CPP **4.9.0** source
 (cited as `BT/src/…` and `BT/include/…` below).
 
 **Version delta note.** Groot2 1.10.0 pairs with BT.CPP 4.11.0 (both released
