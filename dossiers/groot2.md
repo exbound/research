@@ -7,7 +7,7 @@
 
 - **Target:** Groot2 (Auryn Robotics) — the proprietary integrated development
   environment for the open-source BehaviorTree.CPP behavior-tree ecosystem
-- **Status:** research · **Last updated:** 2026-11-14 (G-5 v3-compat mode resolved and G-6 free-tier boundary map compiled — the campaign's work packages are complete)
+- **Status:** research · **Last updated:** 2026-11-15 (§E landscape corrected: open Groot2-protocol clients, including breakpoint support, already exist)
 - **One-line objective:** an independent Groot2-*compatible* behavior-tree IDE
   that unifies the three lives of a tree — authored (`.btproj`), executing
   (ZMQ monitor), and recorded (`.btlog`) — over the publicly specified
@@ -520,22 +520,46 @@ the v3 log/flatbuffer surface, pinned in the G-5 findings above).
   (all 12 request tags, the status-buffer idle encoding, MessagePack-JSON
   blackboards, full hook/breakpoint JSON), the `.db3` schema, and the full
   BT.CPP 4 XML dialect including `TreeNodesModel`. Build against that.
-- **Landscape (for the reconstruction):** the community already has (a) a
-  monitor + replay path — an open `.btlog` writer that the vendor IDE opens,
-  and a project that covers the live-monitor protocol deeply with a mock
-  server usable as a test double; and (b) partial editors — including a VS
-  Code plugin. What no project holds today is **editor + monitor + replay in
-  one data model**, and the two flagship PRO features — breakpoints and
-  fault injection — have **zero open implementations**. The reconstruction
-  objective is exactly that integration: an independent IDE that unifies the
-  three lives of a tree (authored, executing, recorded) over the publicly
-  specified formats.
-- **Subsystems needing new work:** the live ZMQ client (the open-source side
-  specifies the server, not the client — polling cadence and reconnect are
-  ours to choose, the protocol is permissive), breakpoints and fault
-  injection (the C++ side implements every part of the hook lifecycle, but
-  no open IDE wires it to a UI), the free-tier node-cap removal (a product
-  decision, not a protocol one), and the v3-compat mode switch.
+- **Landscape (for the reconstruction), corrected 2026-11-15.** An earlier
+  version of this section said breakpoints and fault injection had "zero
+  open implementations" and that no open project held a live ZMQ client.
+  Both claims were wrong; this is the retraction. Open projects that speak
+  the Groot2 monitor protocol to an unmodified `Groot2Publisher`, as each
+  project describes itself (ESTABLISHED as *cited*; none exercised against
+  the reference environment here):
+  - **BTick** (SherifFathey/btick_app, Apache-2.0; Electron + React) —
+    live monitor with tree, status, transitions and read-only blackboard;
+    over the Groot2 protocol its documentation lists breakpoints as
+    supported and forced SUCCESS/FAILURE "through hook replacement"; an XML
+    editor for BT.CPP v4; session record/replay to its own JSON format (not
+    `.btlog`); "unlimited nodes". Sources: the project's docs
+    (sheriffathey.github.io/btick_docs, protocol-comparison and XML-editor
+    pages) and its announcement on discourse.openrobotics.org (topic 59220).
+  - **slci/Groot** (MIT, experimental) — a v4 port of the Groot 1 editor:
+    edits and saves v4 XML, monitors via `Groot2Publisher`, replays
+    FileLogger2 `.btlog`; its README states it does not implement
+    breakpoints, blackboard inspection or log capture.
+  - **EvoWorkforce/BehaviorTreeMonitor** (MIT) — read-only monitor with a
+    live blackboard and transition timeline; never inserts hooks.
+  - Plus the `btview` protocol re-pin and mock (Apache-2.0) and the VS Code
+    viewer already cited. Groot 1 (BehaviorTree/Groot) is MIT-licensed
+    (licence text in its README).
+
+  What none of them claims, and what remains this reconstruction's
+  objective, is **compatibility with the reference IDE's own documents and
+  records, measured against it**: the `.btproj` and tree-XML save shape in
+  both dialects (the G-1/G-5 serializer rules above), `.btlog` as the
+  recording format, and the `.db3` schema — together with editor, monitor
+  and replay in one data model. HYPOTHESIS until each project's file
+  handling is checked against the fixtures in §F: that none of them
+  reproduces the reference serializer byte-for-byte.
+- **Subsystems needing new work:** a document layer that round-trips both
+  XML dialects losslessly (the serializer delta of G-1/G-5), the `.btlog`
+  and `.db3` read/write paths, the live ZMQ client (open clients exist, but
+  none is a base this objective can inherit; polling cadence and reconnect
+  are ours to choose, the protocol is permissive), the breakpoint and
+  fault-injection UI over the hook lifecycle, the free-tier node-cap removal
+  (a product decision, not a protocol one), and the v3-compat mode switch.
 - **Open bases evaluated:** BehaviorTree.CPP itself (the specification), the
   open `.btlog` writer/replayer (as cross-check and test double), the open
   ZMQ protocol project and its mock (as a second oracle). None is a complete
