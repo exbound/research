@@ -24,7 +24,7 @@ Re-derive any entry with `sha256sum <path>` from this directory.
 | `in-o2-same/tree.xml` | 266 | `31ce572eff48443be6843eea06ba6e6a9ed6215da3cc3465ee6c6f7630df93af` |
 | `in-o4-paths/abs.xml` | 177 | `9fcf75015145f18e8a30064835d7b3e4703c4a16d191b258ca1b9d5a6238444f` |
 | `in-o4-paths/deep/nest/tree2.xml` | 176 | `5658488876b0ab1f4a6d54e3e4530f1eed32fab3f91d8fdc857ba696952e60f4` |
-| `in-o4-paths/proj.btproj` | 268 | `df0aa92651ec541281ae42441b94fcb980c42f1b13ee3d8d41294ab45588be47` |
+| `in-o4-paths/proj.btproj` | 242 | `a410c35c09e794e659952b1b017b78b81fa6ebfe23c5d2ecbf106df2876c3a60` |
 | `in-o4-paths/sub/tree.xml` | 173 | `64e3c096866ca46ea28b4364c2077fce32a47a056c2e7a85c98993114dc1b774` |
 | `in-o5-single.xml` | 183 | `e3a012abdb6b58274969eb5e76dfffba30c747dc9abbc4fbecc1c6b3db591da6` |
 | `in-o6-model/proj.btproj` | 403 | `660835e08311c72c8fce08f8dfc29c3f312767ae2fc482b43de6ac6ffcb72ebe` |
@@ -73,8 +73,10 @@ Re-derive any entry with `sha256sum <path>` from this directory.
 - `out-o2-same/`, `out-o2-diff/` — the reference's project-Export
   output (the reference's only project-file write) for each.
 - `in-o4-paths/` — a project whose four includes exercise nested,
-  parent-relative, deep-nested and **absolute** path forms (the
-  absolute form is part of the test and kept as authored).
+  parent-relative, deep-nested and **absolute** path forms. The
+  absolute form is a neutral path (`/abs/in-o4-paths/abs.xml`); the
+  capture ran with a machine-specific absolute path, and the
+  reference output flattens either to the bare basename `abs.xml`.
 - `in-o5-single.xml` — a standalone tree file, no project.
 - `in-o6-model/` — a project whose node models isolate the
   `editable` attribute and the `<description>` element across three

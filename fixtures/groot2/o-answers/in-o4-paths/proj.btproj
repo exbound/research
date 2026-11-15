@@ -3,5 +3,5 @@
   <include path="sub/tree.xml"/>
   <include path="../outside.xml"/>
   <include path="deep/nest/tree2.xml"/>
-  <include path="/home/cam/vms/groot/o-fixtures/in-o4-paths/abs.xml"/>
+  <include path="/abs/in-o4-paths/abs.xml"/>
 </root>
