@@ -145,18 +145,17 @@ route that writes a project file; see O-8):
 **Different minor version** — input
 `in-o2-diff-corrected/proj.btproj` carries `BTCPP_version="4.9"`:
 
-- Opening the project triggers a **version-mismatch dialog** (title
-  "BT.CPP version"):
-  > *"2 file(s) use an older BT.CPP (the newest is 4.9). Groot targets
-  > BT.CPP 4.10."*
-  > "Opening keeps the target: the files are saved as 4.10 the next
-  > time you save them (nothing is written now)."
-  > "Switch to 4.9 changes the target of Groot (it can be changed
-  > again in Preferences)."
-  Buttons: **[Upgrade files to 4.10]** **[Cancel]**
-  **[Switch to 4.9 — default]**
-- Choosing **"Upgrade files to 4.10"** (in-memory; verified the on-disk
-  hash was unchanged before export) and then exporting produced
+- Opening the project triggers a **version-mismatch dialog** that
+  pre-announces the upgrade: it informs that the files will be saved as
+  the reference's target the next time they are saved, that nothing is
+  written now, and offers three choices — upgrade the files' in-memory
+  target, cancel, or retarget the reference to the older version
+  (the retarget is changeable later in preferences). See "The
+  version-mismatch dialog (functional description)" below for the full
+  functional description. *(2026-11-15 correction: the verbatim vendor
+  dialog text was replaced with a functional paraphrase.)*
+- Choosing the **in-memory upgrade** (verified the on-disk hash was
+  unchanged before export) and then exporting produced
   `out-o2-diff/proj.btproj` (hash
   `f63f6f919e5daf7a1a4e47e2f1ff079bdefd21a3974f67f7eaef97bdb2360513`):
   the written stamp is `BTCPP_version="4.10"` — **normalized to the
@@ -294,40 +293,59 @@ order is `PlainModel, EditableModel, PlainCondition`; output order is
 
 **Two additional write-style facts visible in `out-o6/`:**
 
-1. **The tree file also embeds the project's `TreeNodesModel`** —
-   `out-o6/tree.xml` (hash
+1. **The written tree carries the models the tree itself uses** —
+   **NEEDS-MEASUREMENT** (2026-11-15 correction). The earlier claim
+   that "a project export embeds the project's models into **every**
+   copied tree file" is contradicted by this set's own bytes:
+   `out-o2-same/tree.xml` (hash `c800d2b6…`) and
+   `out-o2-diff/tree.xml` (same hash) are export copies whose
+   `TreeNodesModel` block is **empty**, even though their projects
+   (`in-o2-same-corrected/proj.btproj` hash `63f7dd0c…`,
+   `in-o2-diff-corrected/proj.btproj` hash `6880dc39…`) each declare
+   the `SayHello` model. Every written tree in this set fits the
+   rule "**a written tree file carries exactly the declared models
+   the tree uses**": `out-o6/tree.xml` (hash
    `f1a2822e9e492c7b614bf45b2033649bc5b6b9a30a0e49f4791e78b1b45bacf9`)
-   contains the same model block (editable kept, description dropped,
-   re-sorted), even though the **input** `in-o6-model/tree.xml` (hash
-   `61e06174…`) had **no** `TreeNodesModel` block at all. A project
-   export embeds the project's models into **every** copied tree file,
-   not just the project file itself.
+   uses all three of its project's models and carries all three; the
+   two `out-o2-*/tree.xml` files use none and carry none; and
+   `in-o9-awkward/comments-rt.xml` (hash `129a8f83…`) drops the
+   `X` model that `in-o9-awkward/comments.xml` (hash `b6da0f10…`)
+   declared but did not use. The O-14 measurement settles the rule:
+   a project declaring two models whose tree uses one, written
+   through the same routes.
 
-2. **Long tags get attribute-wrapped onto continuation lines.** In
-   `out-o6/tree.xml`, the `EditableModel` entry's tag is:
-   ```xml
-   <Action ID="EditableModel"
-           editable="true">
-   ```
-   while the shorter `<Action ID="PlainModel"/>` stays on one line.
-   In the canonical-style examples without models
-   (`out-o5/in-o5-single.xml`, `out-o4/tree.xml`, etc.),
-   `<Action ID="SayHello" editable="true"/>` (38 chars, including the
-   tag's own name) stayed on one line; the 43-char
-   `<Action ID="EditableModel" editable="true">` wrapped. The
-   **threshold sits somewhere between 38 and 43 characters** of
-   rendered tag length; the exact cutoff is not pinned by this set
-   (the O-9 set does not vary tag length) and is recorded here as the
-   observed bound, not a claimed constant.
+2. **Tags with two observed attributes wrap in tree files; the
+   fixtures cannot separate an attribute-count rule from a length
+   threshold** (2026-11-15 correction). The one-line two-attribute
+   counter-example exists only in `.btproj` files, which never wrap:
+   `<Action ID="SayHello" editable="true"/>` stays on one line in
+   `out-o2-same/proj.btproj` (hash `29234f68…`) and
+   `out-o2-diff/proj.btproj` (hash `f63f6f91…`). In tree files,
+   every observed two-attribute tag wraps: in `out-o6/tree.xml`,
+   both `<Action ID="EditableModel" editable="true">` and
+   `<Condition ID="PlainCondition" editable="true"/>` are split onto
+   continuation lines, while the one-attribute
+   `<Action ID="PlainModel"/>` is not. In `.btproj` files,
+   the root tag carries **three** attributes — `BTCPP_format`,
+   `BTCPP_version` and `project_name` (two where `project_name` is
+   absent) — all inline on one line, and project-file roots in
+   this set are **never wrapped** (so even three or four
+   attributes stay on one line). The fixture set contains no
+   tree-file tag that stays on one line with two attributes, so
+   "two or more attributes" and a rendered-length threshold are
+   **not separable from these bytes**; the O-10 measurement will
+   decide.
 
 **Combined O-6 answer:** `editable="true"` is **kept**;
 `<description>` is **dropped** (confirming the vendor's own
 public-issue report that the description "does not display and does
 not preserve on save"); entries are **re-sorted alphabetically** on
-write; the model block is **embedded into the tree files** at project
-export; and a **length-based attribute wrap** applies to long model
-tags (threshold observed in the 38–43 char band, exact value
-NEEDS-OBSERVATION).
+write. The model-embedding rule is **NEEDS-MEASUREMENT** — the set
+supports "a written tree carries exactly the declared models the
+tree uses," but the two-models-one-used case (O-14) has not been
+measured. The attribute-wrap behavior is observed but
+**unexplained** by these fixtures; the deciding measurement is
+O-10.
 
 ---
 
@@ -438,28 +456,35 @@ reproduce the **rejection**, not the load. The corrected copies
 `<AlwaysSuccess/>` so the reference will load them, and the
 measurements above ran on the corrected copies.
 
-### The version-mismatch dialog (exact text and choices)
+### The version-mismatch dialog (functional description)
 
 Opening a project whose `BTCPP_version` stamp is **older** than the
 reference's current target (here, `4.9` vs target `4.10`) presents a
-dialog titled **"BT.CPP version"** before the project loads:
+version-mismatch dialog before the project loads. *(2026-11-15
+correction: the verbatim vendor dialog text was replaced with a
+functional paraphrase.)*
 
-> "2 file(s) use an older BT.CPP (the newest is 4.9). Groot targets
-> BT.CPP 4.10."
-> "Opening keeps the target: the files are saved as 4.10 the next time
-> you save them (nothing is written now)."
-> "Switch to 4.9 changes the target of Groot (it can be changed again
-> in Preferences)."
+**Functional description.** The dialog pre-announces the upgrade:
+it informs that the files will be saved as the reference's target
+version the next time they are saved, and that nothing is written at
+open time. It offers three choices:
 
-Buttons (left to right): **[Upgrade files to 4.10]** **[Cancel]**
-**[Switch to 4.9 — default]**
+1. **Upgrade the files' in-memory target** — the files are re-stamped
+   to the reference's current target in memory; the on-disk bytes are
+   untouched until a subsequent save or export.
+2. **Cancel** — the open is abandoned.
+3. **Retarget the reference application to the older version** —
+   the reference's own compatibility target is switched to the
+   files' declared version (here, `4.9`), changing the reference's
+   behavior for all subsequent opens and saves. This retarget is
+   changeable later in the reference's preferences.
 
-"Upgrade files" is **in-memory only** — the on-disk file is not
-touched until a save/export occurs. "Switch to 4.9" would **retarget
-the reference application** to 4.9 (changing its behavior for all
-subsequent opens and saves) and was not exercised in this session.
-The dialog pre-announces the O-2 different-minor normalization
-behavior.
+In the O-2 different-minor measurement, choice 1 was exercised; the
+on-disk hash was verified unchanged after the open, and the
+subsequent export produced the normalized `BTCPP_version="4.10"`
+stamp. Choice 3 would have retargeted the reference to `4.9` and was
+not exercised in this session. The dialog is the pre-announcement of
+the O-2 different-minor normalization behavior.
 
 ---
 
@@ -471,3 +496,17 @@ behavior.
   measured this session (a timing property, not a file property);
   non-blocking per the spec — the implementation's own bounded
   exponential-back-off policy stands.
+- **O-10** (attribute-wrap rule, tree files): not yet measured; the
+  O-6 wrap observations cannot separate an attribute-count rule from
+  a rendered-length threshold.
+- **O-14** (model-embedding rule for a project whose tree uses only
+  some of its declared models): not yet measured; the O-6 embedding
+  claim is NEEDS-MEASUREMENT until this settles it.
+- **O-15** (the O-4 parent-relative include target, `outside.xml`):
+  the input file was omitted from the published fixture set — the
+  MANIFEST hash `e826c43c…` was recorded, but only the hash was
+  published, not the bytes. **Published 2026-11-15** at
+  [`outside.xml`](../fixtures/groot2/o-answers/outside.xml)
+  (named for its role as the parent-relative include target, placed
+  where the `in-o4-paths/` project's `../outside.xml` include
+  resolves it); the file's sha256 matches the recorded MANIFEST row.
