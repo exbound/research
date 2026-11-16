@@ -139,11 +139,9 @@ node modified in-canvas; and with `a/`/`b/` subdirectories
 **Combined O-11 answer:** the exporter writes the project file only;
 includes are re-pointed at their (last-saved) source locations; a
 modified tree is written back to its source. The two-include
-same-basename case therefore cannot clobber. This also refines the
-first set's O-4 finding: for **subdirectory** includes the exporter
-never places a tree file in the destination, while a **flat** include
-(next to the project) is copied — the exporter's tree-placement rule
-differs by include form.
+same-basename case therefore cannot clobber. The exporter wrote the
+project file only in this session; see the file-copy section for the
+open measurement.
 
 ---
 

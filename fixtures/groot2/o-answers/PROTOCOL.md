@@ -24,7 +24,7 @@ The as-authored `in-o1-proj/tree.xml`, `in-o2-same/tree.xml` and
 `in-o2-diff/tree.xml` (all three byte-identical) contain an
 `<AlwaysSuccess>` **wrapping** a `<Script>` child. The reference
 rejects the load with the dialog **"Error at line 6: An Action node
-must not have any child"** — the same rule BehaviorTree.CPP's own
+refuses an Action node that has a child"** — the same rule BehaviorTree.CPP's own
 loader enforces. Opening such a project loads the project metadata
 (including its custom node model) but no tree.
 

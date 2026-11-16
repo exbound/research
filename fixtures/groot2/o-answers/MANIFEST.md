@@ -59,7 +59,7 @@ Re-derive any entry with `sha256sum <path>` from this directory.
 
 - `in-o1-proj/` — as-authored project: its tree contains an Action
   node **carrying a child**, which the reference's loader rejects
-  ("An Action node must not have any child"). Published because the
+  (a load refusal: an action-type node carrying a child element). Published because the
   rejection itself is a recorded behavior (see
   [`../../dossiers/groot2-o-answers.md`](../../dossiers/groot2-o-answers.md)).
 - `in-o1-proj-corrected/` — the same project with the offending node

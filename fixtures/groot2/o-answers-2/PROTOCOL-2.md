@@ -50,7 +50,7 @@ published alongside them:
   counts and value lengths identical; the wrapping question is
   count/length-driven, so the name swap preserves the measurement.
 - **O-11** — `b/tree.xml` carries an `Action` node with a child, which
-  the reference refuses ("An Action node must not have any child").
+  the reference refuses (an action-type node carrying a child element).
   The corrected copy collapses the wrapper to a self-closing tag; the
   tree stays a distinct, loadable tree (its content is irrelevant to
   the basename-collision question).
