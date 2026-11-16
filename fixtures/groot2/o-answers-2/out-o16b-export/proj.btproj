@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" BTCPP_version="4.10" project_name="O16B">
+    <include path="../out-o16b/ordered.xml"/>
+    <include path="../out-o16b/stamped.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel/>
+</root>

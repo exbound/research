@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" BTCPP_version="4.10" project_name="O11">
+    <include path="../out-o11-corrected/a/tree.xml"/>
+    <include path="../out-o11-corrected/b/tree.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel/>
+</root>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      BTCPP_version="4.10">
+  <BehaviorTree ID="Main">
+    <Sequence>
+      <WrapProbe name="A2short"
+                 code="return true;"
+                 x=""
+                 y=""
+                 z=""
+                 port=""/>
+      <WrapProbe name="A3short"
+                 code="return true;"
+                 x="1"
+                 y=""
+                 z=""
+                 port=""/>
+      <WrapProbe name="A1long"
+                 code="return true;"
+                 x=""
+                 y=""
+                 z=""
+                 port="qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"/>
+      <WrapProbe name="A4mix"
+                 code="return true;"
+                 x="1"
+                 y="2"
+                 z="rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr"
+                 port=""/>
+    </Sequence>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="WrapProbe">
+      <input_port name="code"
+                  type="std::string"/>
+      <input_port name="x"
+                  type="int"/>
+      <input_port name="y"
+                  type="int"/>
+      <input_port name="z"
+                  type="std::string"/>
+      <input_port name="port"
+                  type="std::string"/>
+    </Action>
+  </TreeNodesModel>
+
+</root>

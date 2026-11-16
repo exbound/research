@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" project_name="O14">
+  <include path="tree.xml"/>
+  <include path="unused.xml"/>
+  <TreeNodesModel>
+    <Action ID="UnusedModel" editable="true"/>
+    <Action ID="UsedModel" editable="true">
+      <input_port name="p"/>
+    </Action>
+  </TreeNodesModel>
+</root>

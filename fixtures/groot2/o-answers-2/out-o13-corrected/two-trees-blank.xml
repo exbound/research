@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="First">
+    <Script code="return true;"/>
+  </BehaviorTree>
+
+
+  <BehaviorTree ID="Second">
+    <AlwaysSuccess/>
+  </BehaviorTree>
+</root>

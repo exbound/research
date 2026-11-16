@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="3" project_name="O12">
+  <include path="tree.xml"/>
+  <TreeNodesModel>
+    <Action ID="MoveBase" editable="true">
+      <input_port name="goal"/>
+    </Action>
+  </TreeNodesModel>
+</root>

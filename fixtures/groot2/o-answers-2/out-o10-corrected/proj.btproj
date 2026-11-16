@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" project_name="O10">
+  <include path="tree.xml"/>
+  <TreeNodesModel>
+    <Action ID="WrapProbe">
+      <input_port name="code" type="std::string"/>
+      <input_port name="x" type="int"/>
+      <input_port name="y" type="int"/>
+      <input_port name="z" type="std::string"/>
+      <input_port name="port" type="std::string"/>
+    </Action>
+  </TreeNodesModel>
+</root>

@@ -526,6 +526,24 @@ fixture-file evidence:
   2026-11-15** in the fixture set, hash matching the recorded
   MANIFEST row).
 
+### O-answers, second set — the remaining save-behavior open questions (2026-11-15)
+
+The second 2026-11-15 session on Groot2 v1.10.0 PRO answered the
+remaining save-behavior open questions of the implementation spec's
+§7 — **O-10 (attribute wrapping), O-11 (duplicate basenames on
+export), O-12 (V3-mode save normalization), O-13 (escaping, content
+and layout), O-14 (model selection — the "exactly the models the
+tree uses" rule survives), and O-16 (stamp edge cases)** — measured
+on self-authored BT.CPP v4 (and v3 for O-12) inputs. The fixture set
+— inputs, the reference's own written outputs, the corrected copies
+for the three fixtures the reference refused to load, and a full
+hash manifest — is published at
+[`fixtures/groot2/o-answers-2/`](../fixtures/groot2/o-answers-2/)
+with the capture protocol; the findings record — each answer with
+its file-and-hash evidence, the unified exporter include rule, and
+the recorded load-refusal behaviors — is at
+[`groot2-o-answers-2.md`](groot2-o-answers-2.md).
+
 ## A. Product & version archaeology
 
 | Version | Released | Edition/modules | OS/arch | Notes | Status |
