@@ -30,7 +30,7 @@ bytes were re-derived at publication; re-derive any entry with
 | `in-o14-models/unused.xml` | 154 | `b2c2ba67a4b11e761ce4822ed42fb02e62d9496745305281d7114476c46de3bd` |
 | `in-o16-stamps/ordered.xml` | 177 | `07f344d63659aaad3884d890d9b088e0538c63b47ee2163debaa895a0df98be4` |
 | `in-o16-stamps/proj-411.btproj` | 141 | `b7437050d677c439ef4c8caff4b1b31fe7fba45241e17ac02adeff55d9dc4e9b` |
-| `in-o16-stamps/proj-stamp.btproj` | 155 | `52a1c121b85852e0a58ddd5a26e139d94620dec68112f40eef3f059e55f57` |
+| `in-o16-stamps/proj-stamp.btproj` | 155 | `52a1c121b85852e0a58ddd5a26e139d94620dec68112f40eefb973f059e55f57` |
 | `in-o16-stamps/stamped.xml` | 173 | `8d718adac1d0e22a61468f114ee63c1143944ec3db3375b6f1c8967165d9f6e9` |
 | `in-o16-stamps/t411.xml` | 150 | `96b01c65633a9645ab7e7aae9546c0dfa8f2d7b632763eafa17619f765a39b18` |
 | `out-o10-corrected/proj.btproj` | 430 | `a88cb1dbc8c0af974c07725a39f798138f3c6f6a0eb48361bac9cd4599f4ce45` |

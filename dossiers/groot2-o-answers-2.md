@@ -30,35 +30,57 @@ where do continuation lines align?
 
 Input: the corrected O-10 project
 (`out-o10-corrected/`, MANIFEST hashes `a88cb1db…` / `a2d42087…`) —
-a `Sequence` holding four `WrapProbe` nodes whose attribute counts and
-value lengths mirror the as-authored `Script` nodes: 2 short
-attributes, 3 short, 3 with one 200-char value, and 5 mixed
-(short/long). The as-authored input is published too
+a `Sequence` holding four `WrapProbe` nodes whose value lengths vary
+(short, and one 200-character value) across two to three declared
+attributes. The as-authored input is published too
 (`in-o10-wrap/`, `ea9b7146…` / `63a3fb28…`) — it cannot load: the
 reference's built-in `Script` model declares exactly one port, and
 the nodes here carry several (recorded refusal, see "Loader
 behaviors").
 
+**The writer emits every declared model port as an attribute.**
+Because the corrected project declares the `WrapProbe` model with
+five ports and the writer emits them all (filling unused ports with
+the empty string — the bonus finding below), **every written
+`WrapProbe` node in the output carries six attributes** — `name`,
+`code`, `x`, `y`, `z`, `port` — and **five continuation lines**,
+whatever the authored attribute count was (two, two, two
+or three in this fixture). (The as-authored input is
+published for provenance only; the bytes measured are the
+writer's own output.)
+
 Output: [`out-o10/tree.xml`](../fixtures/groot2/o-answers-2/out-o10/tree.xml)
 (hash `a750cce4…`, 1679 B). Measured directly from the bytes:
 
-- **The wrap is attribute-count-driven, threshold ≥ 2.** Every element
-  with two or more attributes is written one attribute per
-  continuation line: the 2-attribute node gets one continuation, the
-  3-attribute nodes three, the 5-attribute node five. One-attribute
-  elements (`<Sequence>`, the root's first line) stay on one line.
-  Nothing is grouped two-per-line anywhere in the file.
-- **Attribute value length is irrelevant.** The nodes carrying
-  200-character values wrap identically line-for-line to their short-
-  value siblings with the same attribute count (compare the
-  `A1long` and `A3short` tags in the output).
-- **Continuation alignment = the first-attribute column.** For a
-  body node at 6-space indent, continuations sit at column 17 (the
-  element indent plus the length of the open tag and first attribute
-  name position) — e.g. `code="return true;"` starts at the same
-  column on every wrapped node, and the model rows' `<input_port>`
-  pairs align at the model-row first-attribute column in the embedded
-  block.
+- **The wrap is attribute-count-driven: two or more attributes
+  wrap, one does not; length is irrelevant.** Every element with
+  two or more attributes is written **one attribute per
+  continuation line**; one-attribute elements stay on one line.
+  The long-value and short-value cases wrap
+  **line-for-line identically** (`A1long`, carrying a 200-character
+  `port` value, and `A3short`, carrying short values, differ in
+  the written file only in the value's byte content — the same
+  number of attributes and the same number of lines), so no
+  rendered-length threshold can be in play. The same rule is
+  visible on the model rows inside the embedded block: the
+  two-attribute `<input_port name="…" type="…">` rows wrap
+  one-attribute-per-line, while the one-attribute
+  `<Action ID="WrapProbe">` and `<BehaviorTree ID="Main">` rows do
+  not.
+- **Continuation alignment = the first attribute's value
+  column.** In the fixture the attributes begin at **byte offset
+  17** of the line (zero-based), i.e. **column 18**
+  one-based: `      <WrapProbe ` is 17 characters, and the first
+  attribute's `name` starts there, with every continuation line
+  indented to the same offset (17 leading spaces, `code` at
+  offset 17). The rule in general is "aligned under the first
+  attribute," which equals this fixed column for the six-space
+  `<WrapProbe` nodes of this fixture; the model-row
+  `<input_port>` pairs align the same way at the model-row
+  first-attribute column in the embedded block.
+- **`<Sequence>` has zero attributes and stays on one line** —
+  the one-line case here is the zero-attribute element, alongside
+  the one-attribute rows.
 - **The root stamp is on its own 6-space continuation line:**
   `BTCPP_version="4.10"` indented to the `BTCPP_format` attribute —
   the O-1 rule, confirmed again.
@@ -66,16 +88,17 @@ Output: [`out-o10/tree.xml`](../fixtures/groot2/o-answers-2/out-o10/tree.xml)
   model with its five ports, each `input_port` row wrapped
   one-attribute-per-line on the same rule.
 
-**Bonus finding (feeds the O-14 and spec §3.2 model-port rule): the
-writer emits EVERY declared port of a node's model as an attribute on
-write, filling unused ports with the empty string.** Input `A2short`
-carried only `name` and `code`; the written element carries all six
-— `name`, `code`, `x=""`, `y=""`, `z=""`, `port=""`. The attribute set
-on write is the node model's declared ports ∪ `name`. (This is a
-configuration of the reference's own settings file — the option
-controls whether unused ports are emitted as empty attributes — not
+**The written attribute set is the model's declared ports ∪
+`name`.** Input `A2short` carried only `name` and `code`; the
+written element carries all six — `name`, `code`, `x=""`, `y=""`,
+`z=""`, `port=""` (and the nodes that carried more still carry
+exactly these six — every written `WrapProbe` in the output has
+the same six attributes, which is what makes the wrapping
+comparison above uniform). (This emission of unused ports as empty
+attributes is a configuration of the reference's own settings
+file — the option controls whether unused ports are emitted — not
 an intrinsic property of the format; the reference as configured
-emits them.)
+emits them. Feeds the O-14 and spec §3.2 model-port rule.)
 
 ---
 
@@ -194,9 +217,10 @@ Five standalone tree files, each varying one property; inputs in
 hashes throughout).
 
 **Attribute escaping** — input `attr-escapes.xml`
-(`a30cdbad…`), value `a &quot;b&quot; &lt;tag&gt; end 'single' é`
-(refused as authored — undeclared `Script` port; corrected copy
-published, escape payload byte-identical). Output
+(`a30cdbad…`), value `a &quot;b&quot; &lt; tag &gt; end 'single' é`
+(spaces inside the escaped angle-bracket pair, as written in the
+fixture; refused as authored — undeclared `Script` port; corrected
+copy published, escape payload byte-identical). Output
 [`out-o13/attr-escapes.xml`](../fixtures/groot2/o-answers-2/out-o13/attr-escapes.xml)
 (`8b4d0729…`) carries, verbatim:
 
@@ -227,13 +251,18 @@ element. Output [`out-o13/content.xml`](../fixtures/groot2/o-answers-2/out-o13/c
 — self-closing, no text, not refused, not echoed. Element text is
 not part of the dialect's model.
 
-**Multiple blank lines between trees collapse to one.** Input
-`two-trees-blank.xml` (`ee61b40e…`, two blank lines between the
-trees; refused as authored — an `Action` with a child; corrected copy
-preserves the double gap). Output `out-o13/two-trees-blank.xml`
-(`9e7ef7aa…`): exactly **one** blank line between the
-`BehaviorTree` elements (then the blank line + comment + model block
-+ blank line before `</root>`, the canonical style).
+**Exactly one blank line between trees is written.** Input
+`two-trees-blank.xml` (`ee61b40e…`, **two** blank lines between the
+trees; refused as authored — an `Action` with a child; corrected
+copy preserves the double gap) is written with the extra gap
+collapsed. Input `two-trees-tab.xml` (`a4a4131d…`) has **no** blank
+line between its trees, and its output `out-o13/two-trees-tab.xml`
+(`96536c65…`) **has one** — the writer inserted it. Output
+`out-o13/two-trees-blank.xml` (`9e7ef7aa…`) likewise carries
+exactly one. Together: the writer normalizes the inter-tree
+spacing to **exactly one blank line** — inserted when absent,
+collapsed when multiple — followed by the blank line + comment +
+model block + blank line before `</root>`, the canonical style.
 
 **Tab indentation is rewritten to 2 spaces throughout.** Input
 `two-trees-tab.xml` (`a4a4131d…`, first tree tab-indented, second
@@ -323,12 +352,14 @@ had to be closed first.
 
 **(b) Older stamp in a tree file (4.9 < 4.10).** Opening
 `proj-stamp.btproj` (`52a1c121…`) — which includes `stamped.xml`
-carrying `BTCPP_version="4.9"` — prompts on open with the
-**three-file pre-announcement**: the files use an older BT.CPP (the
-newest is 4.9), opening keeps the current target, and the files are
-saved as 4.10 the next time they are saved (nothing written now), or
-the reference's target can be switched to 4.9. Choosing to keep the
-target: the per-file save
+carrying `BTCPP_version="4.9"` — presents on open the
+**version-mismatch dialog**, the same pre-announcement the first
+set's O-2 recorded: the files use an older BT.CPP version and will
+be saved as the reference's version (4.10) the **next time they
+are saved** — nothing is written now — and it offers the same
+three choices (upgrade the files' in-memory target, cancel, or
+retarget the reference to 4.9, changeable later in preferences).
+Choosing to keep the current target: the per-file save
 [`out-o16b/stamped.xml`](../fixtures/groot2/o-answers-2/out-o16b/stamped.xml)
 (`7e7235d9…`) **rewrites the 4.9 stamp to 4.10**, exactly as
 announced — the older stamp is not preserved and not dropped. The
@@ -350,36 +381,53 @@ foreign `project_name` is **dropped** from the written tree-file root
 
 ---
 
-## The unified exporter include rule
+## The exporter's file-copy behavior — **NEEDS-MEASUREMENT**
 
-New, measured consistently across O-11, O-12, O-14 and O-16 —
-this unblocks the spec's project-write section:
+The file-copy half of the exporter rule (which tree files land in
+the export destination) **cannot be stated as a unified rule**: the
+recorded sessions disagree on it.
 
-**For each `<include>`: keep the line if the referenced file exists
-relative to the new project file's location; otherwise rewrite it to
-point at the tree's last-saved location, relative to the new project
-file. The lines are sorted.**
+- **This session (O-11, O-12, O-14, O-16):** every export wrote
+  **only the project file** into the destination — no tree file
+  appeared, not even for flat (same-directory) includes, and
+  pre-created subdirectories were left empty (`3ef5f163…`,
+  `ace4d1ed…`, `37a41f0b…`, `51f9c414…`, `00c523ed…`).
+- **The first set's O-4 (the counter-example):** the export **copied
+  all four trees, flattened, beside the destination project file** —
+  including the subdirectory includes — `out-o4/` carries
+  `tree.xml`, `tree2.xml`, `abs.xml` and `outside.xml` alongside
+  `proj.btproj`.
 
-Evidence: O-11 (`a/`, `b/` subdirectory includes — kept as
-relative-to-new-project paths to the sources, `3ef5f163…`); O-12
-(include rewritten to the standalone tree's last-saved location,
-`ace4d1ed…`); O-14 (both subdirectory includes repointed and sorted,
-`37a41f0b…`); O-16a (flat include **kept** — the file exists relative
-to the new project, `51f9c414…`); O-16b (both includes repointed and
-**sorted**, `00c523ed…`). The exporter resolves include paths from
-the tree files' last-saved association rather than from the loaded
-project's include lines (observed persisting across a project
-close/open within one reference session), which is why a fresh
-re-open of the same project exported the same rewritten paths.
+The include **path** rewriting itself is consistent across both
+sets (kept or repointed as recorded in each section above, sorted
+on write), and this session also observed the exporter resolve
+include paths from the tree files' last-saved association rather
+than from the loaded project's include lines (observed persisting
+across a project close/open within one reference session). What
+differs is whether copies are written at all.
+
+**Candidate variables (unmeasured):** the export dialog's **per-row
+tick state** (the first session's log records the dialog showing a
+checked box per modified include; this session's rows were not
+ticked); whether the trees had been **opened or modified** before
+the export; and the dialog's **pre-filled destination**. O-4 stands
+as the counter-example; a controlled measurement — same project,
+rows ticked versus unticked — would settle it. **Until then the
+exporter rule does not unblock the spec's project-write section
+(§3.3)** beyond the path-rewriting behavior above.
 
 ---
 
 ## Additional recorded behaviors (all from reference dialogs at load)
 
-- **An `Action` node with a child is refused:** "An Action node must
-  not have any child" — hit by the as-authored O-11 `b/tree.xml` and
-  two of the O-13 inputs (corrected copies published); same rule as
-  the first set's O-1/O-2 rejections.
+- **A load refusal on an `Action` node carrying a child:** the
+  reference's loader refuses an action-type node that carries a
+  child element (the refusal the first set recorded for its O-1/O-2
+  inputs, where the vendor dialog's wording is recorded in
+  `groot2-o-answers.md`; the open-source library that supplies the
+  loader builds different wording). Hit here by the as-authored
+  O-11 `b/tree.xml` and two of the O-13 inputs (corrected copies
+  published).
 - **A node port not in its declared model is refused:** the
   as-authored O-10 input (undeclared ports on the built-in `Script`
   model) and the as-authored O-13 `attr-escapes.xml` both failed the
