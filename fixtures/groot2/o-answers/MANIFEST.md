@@ -28,7 +28,7 @@ Re-derive any entry with `sha256sum <path>` from this directory.
 | `in-o4-paths/sub/tree.xml` | 173 | `64e3c096866ca46ea28b4364c2077fce32a47a056c2e7a85c98993114dc1b774` |
 | `in-o5-single.xml` | 183 | `e3a012abdb6b58274969eb5e76dfffba30c747dc9abbc4fbecc1c6b3db591da6` |
 | `in-o6-model/proj.btproj` | 403 | `660835e08311c72c8fce08f8dfc29c3f312767ae2fc482b43de6ac6ffcb72ebe` |
-| `in-o4-paths-parent/outside.xml` | 173 | `e826c43c602bb3630481a3b721a7ad6aa709871f35b1f4bfebc23df5c1162613` |
+| `outside.xml` | 173 | `e826c43c602bb3630481a3b721a7ad6aa709871f35b1f4bfebc23df5c1162613` |
 | `in-o6-model/tree.xml` | 223 | `61e061741186ac6b10da3aa9e651404e78ec5ca953e577422a8c6b9a21555746` |
 | `in-o9-awkward/altquote-rt.xml` | 273 | `129a8f83e9ec93b9e83727dde5fd1cb4305476da190783a17476588baf821fe4` |
 | `in-o9-awkward/altquote.xml` | 170 | `7fd503f398c9641112daa3c1e0f82b7e7c71f407d890926c796b36e4fc93dc96` |
@@ -79,11 +79,12 @@ Re-derive any entry with `sha256sum <path>` from this directory.
   capture ran with a machine-specific absolute path, and the
   reference output flattens either to the bare basename `abs.xml`.
 - `in-o5-single.xml` — a standalone tree file, no project.
-- `in-o4-paths-parent/` — the parent of `in-o4-paths/` in the
-  original capture layout, holding the O-4 parent-relative include
-  target `outside.xml` (the `../outside.xml` entry in
-  `in-o4-paths/proj.btproj`). Published 2026-11-15 so the O-4
-  export can be replayed; the file's bytes match the MANIFEST hash
+- `outside.xml` — the O-4 parent-relative include target (the
+  `../outside.xml` entry in `in-o4-paths/proj.btproj`), published
+  2026-11-15 so the O-4 export can be replayed: it sits at the
+  include-path destination, the `in-o4-paths/` parent directory in
+  the capture layout, so `in-o4-paths/proj.btproj` resolves it
+  without modification. The file's bytes match the MANIFEST hash
   that was recorded when the set was first captured (only the hash
   had been published before).
 - `in-o6-model/` — a project whose node models isolate the

@@ -326,12 +326,15 @@ order is `PlainModel, EditableModel, PlainCondition`; output order is
    `<Condition ID="PlainCondition" editable="true"/>` are split onto
    continuation lines, while the one-attribute
    `<Action ID="PlainModel"/>` is not. In `.btproj` files,
-   the root tag itself carries two added stamp attributes
-   (`BTCPP_format` + `BTCPP_version` + `project_name` → three or
-   more) inline. The fixture set contains no tree-file tag that
-   stays on one line with two attributes, so "two or more
-   attributes" and a rendered-length threshold are **not separable
-   from these bytes**; the O-10 measurement will decide.
+   the root tag carries **three** attributes — `BTCPP_format`,
+   `BTCPP_version` and `project_name` (two where `project_name` is
+   absent) — all inline on one line, and project-file roots in
+   this set are **never wrapped** (so even three or four
+   attributes stay on one line). The fixture set contains no
+   tree-file tag that stays on one line with two attributes, so
+   "two or more attributes" and a rendered-length threshold are
+   **not separable from these bytes**; the O-10 measurement will
+   decide.
 
 **Combined O-6 answer:** `editable="true"` is **kept**;
 `<description>` is **dropped** (confirming the vendor's own
@@ -503,6 +506,7 @@ the O-2 different-minor normalization behavior.
   the input file was omitted from the published fixture set — the
   MANIFEST hash `e826c43c…` was recorded, but only the hash was
   published, not the bytes. **Published 2026-11-15** at
-  [`in-o4-paths-parent/outside.xml`](../fixtures/groot2/o-answers/in-o4-paths-parent/outside.xml)
-  (named for its role as the parent-relative include target); the
-  file's sha256 matches the recorded MANIFEST row.
+  [`outside.xml`](../fixtures/groot2/o-answers/outside.xml)
+  (named for its role as the parent-relative include target, placed
+  where the `in-o4-paths/` project's `../outside.xml` include
+  resolves it); the file's sha256 matches the recorded MANIFEST row.
