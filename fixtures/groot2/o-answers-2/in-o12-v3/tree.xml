@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="3">
+  <BehaviorTree ID="Main">
+    <Sequence>
+      <SetBlackboard output_key="k" value="1"/>
+      <MoveBase goal="{k}"/>
+      <SubTree ID="Side"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Side">
+    <Script code="return true;"/>
+  </BehaviorTree>
+</root>

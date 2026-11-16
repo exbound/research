@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="3">
+  <BehaviorTree ID="Main">
+    <Sequence>
+      <SetBlackboard value="1"
+                     output_key="k"/>
+      <MoveBase goal="{k}"/>
+      <SubTree ID="Side"/>
+    </Sequence>
+  </BehaviorTree>
+
+  <BehaviorTree ID="Side">
+    <Script code="return true;"/>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="MoveBase"
+            editable="true">
+      <input_port name="goal"/>
+    </Action>
+    <Action ID="Script"
+            editable="true">
+      <input_port name="code"/>
+    </Action>
+  </TreeNodesModel>
+
+</root>

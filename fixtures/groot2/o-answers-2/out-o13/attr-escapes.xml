@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4"
+      BTCPP_version="4.10">
+  <BehaviorTree ID="Escapes">
+    <WrapProbe name="has-quotes"
+               code="return true;"
+               note="a &quot;b&quot; &lt; tag &gt; end &apos;single&apos; é"/>
+  </BehaviorTree>
+
+  <!-- Description of Node Models (used by Groot) -->
+  <TreeNodesModel>
+    <Action ID="WrapProbe">
+      <input_port name="code"
+                  type="std::string"/>
+      <input_port name="note"
+                  type="std::string"/>
+    </Action>
+  </TreeNodesModel>
+
+</root>

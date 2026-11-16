@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" BTCPP_version="4.10" project_name="O14">
+    <include path="../out-o14/tree.xml"/>
+    <include path="../out-o14/unused.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel>
+        <Action ID="UnusedModel" editable="true"/>
+        <Action ID="UsedModel" editable="true">
+            <input_port name="p"/>
+        </Action>
+    </TreeNodesModel>
+</root>

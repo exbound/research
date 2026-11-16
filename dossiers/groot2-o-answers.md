@@ -440,17 +440,19 @@ reference's writer.
 The as-authored `in-o1-proj/tree.xml`, `in-o2-same/tree.xml` and
 `in-o2-diff/tree.xml` (all three byte-identical, hash
 `31ce572eff48443be6843eea06ba6e6a9ed6215da3cc3465ee6c6f7630df93af`)
-contain `<AlwaysSuccess><Script code="return true;"/></AlwaysSuccess>`.
-Opening any project that includes this tree produces the error dialog:
-
-> **"Error at line 6: An Action node must not have any child"**
-
-The project **metadata** (including the custom node model, here
-`SayHello`) **does** load; the tree does not. This is consistent with
-BehaviorTree.CPP's own loader rule and is recorded here because the
-**as-authored** input files are part of this fixture set (published
-alongside the corrected copies) and a compatible implementation must
-reproduce the **rejection**, not the load. The corrected copies
+contain `<AlwaysSuccess><Script code="return true;"/></AlwaysSuccess>`
+— an **action-type node carrying a child element**. Opening any
+project that includes this tree is **refused** by the reference's
+loader (an error dialog naming the offending node and line; the
+exact wording is the vendor's — the open-source library that
+supplies the loader builds different text for the same check). The
+project **metadata** (including the custom node model, here
+`SayHello`) **does** load; the tree does not. The behavior is
+consistent with BehaviorTree.CPP's own loader rule and is recorded
+here because the **as-authored** input files are part of this
+fixture set (published alongside the corrected copies) and a
+compatible implementation must reproduce the **rejection**, not the
+load. The corrected copies
 (`in-o1-proj-corrected/`, `in-o2-same-corrected/`,
 `in-o2-diff-corrected/`) collapse the wrapper to
 `<AlwaysSuccess/>` so the reference will load them, and the

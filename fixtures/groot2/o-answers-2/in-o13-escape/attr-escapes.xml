@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4">
+  <BehaviorTree ID="Escapes">
+    <Script name="has-quotes" code="return true;" note="a &quot;b&quot; &lt; tag &gt; end 'single' é"/>
+  </BehaviorTree>
+</root>

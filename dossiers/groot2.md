@@ -509,22 +509,35 @@ fixture-file evidence:
   byte-identical canonical output. The implementation's lossless
   F5 save is therefore a genuinely different operation from the
   reference-compatible F6 save.
-- **Recorded alongside:** the loader rejects an Action node with a
-  child ("An Action node must not have any child" — the as-authored
-  O-1/O-2 inputs hit this; corrected copies ran the measurements),
-  and the version-mismatch dialog's functional choices (the verbatim
-  vendor text was replaced with a paraphrase on 2026-11-15).
+- **Recorded alongside:** the loader refuses an `Action` node
+  carrying a child (the as-authored O-1/O-2 inputs hit this; the
+  refusal is the open-source library's own check, and the wording
+  recorded in the findings record is the vendor's), and the
+  version-mismatch dialog's functional choices (the verbatim vendor
+  text was replaced with a paraphrase on 2026-11-15).
 - **Still open:** O-3 (V3 `TreeNodesModel` rule, deferred to the
-  later editing milestone), O-7 (reconnect back-off, non-blocking
-  timing property, not measured this session), O-10 (attribute-wrap
-  rule for tree files — the O-6 wrap observations cannot separate an
-  attribute-count rule from a rendered-length threshold), O-14
-  (model-embedding rule for a project whose tree uses only some of
-  its declared models — the O-6 embedding claim is
-  NEEDS-MEASUREMENT until this settles it), and O-15 (the O-4
-  parent-relative include target `outside.xml` — **published
-  2026-11-15** in the fixture set, hash matching the recorded
-  MANIFEST row).
+  later editing milestone) and O-7 (reconnect back-off, non-blocking
+  timing property, not measured this session).
+
+### O-answers, second set — the remaining save-behavior open questions (2026-11-15)
+
+The second 2026-11-15 session on Groot2 v1.10.0 PRO answered the
+remaining save-behavior open questions of the implementation spec's
+§7 — **O-10 (attribute wrapping), O-11 (duplicate basenames on
+export), O-12 (V3-mode save normalization), O-13 (escaping, content
+and layout), O-14 (model selection — the "exactly the models the
+tree uses" rule survives), and O-16 (stamp edge cases)** — measured
+on self-authored BT.CPP v4 (and v3 for O-12) inputs. The fixture set
+— inputs, the reference's own written outputs, the corrected copies
+for the three fixtures the reference refused to load, and a full
+hash manifest — is published at
+[`fixtures/groot2/o-answers-2/`](../fixtures/groot2/o-answers-2/)
+with the capture protocol; the findings record — each answer with
+its file-and-hash evidence, the exporter file-copy finding
+(NEEDS-MEASUREMENT — the recorded sessions disagree on it, with
+the first set's O-4 as the counter-example), and the recorded
+load-refusal behaviors — is at
+[`groot2-o-answers-2.md`](groot2-o-answers-2.md).
 
 ## A. Product & version archaeology
 

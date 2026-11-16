@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="3" project_name="O12">
+    <include path="../out-o12/tree-crlf.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel>
+        <Action ID="MoveBase" editable="true">
+            <input_port name="goal"/>
+        </Action>
+        <Action ID="Script" editable="true">
+            <input_port name="code"/>
+        </Action>
+    </TreeNodesModel>
+</root>
