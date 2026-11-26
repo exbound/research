@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" project_name="O18">
+  <include path="tree-a.xml"/>
+  <include path="sub/tree-b.xml"/>
+</root>

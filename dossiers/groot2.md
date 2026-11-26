@@ -539,6 +539,45 @@ the first set's O-4 as the counter-example), and the recorded
 load-refusal behaviors — is at
 [`groot2-o-answers-2.md`](groot2-o-answers-2.md).
 
+### O-answers, third set — O-18 and the duplicate-model question (2026-11-25)
+
+The third session on Groot2 v1.10.0 PRO answered **O-18 (the
+exporter's file-copy behavior — the NEEDS-MEASUREMENT the second
+set left open)** and measured the **duplicate-model-declaration**
+behavior alongside it, on self-authored BT.CPP v4 inputs. The
+fixture set — inputs, the reference's own written outputs, and a
+full hash manifest — is published at
+[`fixtures/groot2/o-answers-3/`](../fixtures/groot2/o-answers-3/)
+with the capture protocol; the findings record is at
+[`groot2-o-answers-3.md`](groot2-o-answers-3.md).
+
+- **O-18 answered — the Save column is tree dirtiness.** The export
+  dialog's per-row Save state is driven entirely by whether the
+  tree is modified: an unmodified tree's row reads `n/a` with **no
+  control** (not settable by hand — mouse and keyboard both inert);
+  a dirty tree's row becomes a real checkbox, **ticked by default**.
+  The tick does **not** copy the tree into the export destination:
+  it saves the modified tree **in place at its include path**
+  (reference-canonical rewrite, version stamp included), and the
+  destination receives `proj.btproj` **only** — four exports with
+  four tree states (unmodified, re-opened, canvas-opened, dirty)
+  produced a **byte-identical** 289-byte project file
+  (`fc53554a…`), includes rewritten destination-relative with the
+  subdirectory segment preserved, order ascending on the written
+  path (which coincides with the dialog row order reversed from the input).
+- **The Save-column rule is established for unmodified trees.** This
+  set's exports (two unmodified trees, one flat and one subdirectory
+  include) wrote the project file only. The first set's O-4 export —
+  into a fresh directory, with all four trees copied there flattened —
+  is **not explained** by the Save-column rule and remains an **open
+  question** (the include forms — parent-relative, absolute, deep
+  subdirectory — are the leading candidate for a second variable).
+- **Duplicate model declarations are legal and silent.** A project
+  and an included tree whose model blocks carry the **byte-identical**
+  entry load with no dialog or warning; the entry shows once in the
+  application, and a per-file save of the tree writes the entry
+  exactly once, leaving the project file untouched.
+
 ## A. Product & version archaeology
 
 | Version | Released | Edition/modules | OS/arch | Notes | Status |
