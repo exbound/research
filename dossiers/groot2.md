@@ -565,20 +565,18 @@ with the capture protocol; the findings record is at
   (`fc53554a…`), includes rewritten destination-relative with the
   subdirectory segment preserved, order ascending on the written
   path (which coincides with the dialog row order reversed from the input).
-- **The Save-column rule is established for unmodified trees.** The
-  first set's O-4 (trees beside the destination, basename includes)
-  is the case where the trees' source paths point **at** the
-  destination at save time; the second set's project-file-only
-  output is the unmodified case. There is **no
-  copy-and-flatten operation** — the variable was always where the
-  source trees lived relative to the destination. The second set's
-  exporter wrote the project file only (for unmodified trees in this fixture set). The first session's O-4 export — into a fresh directory, with all four trees copied there flattened — remains unexplained by the Save-column rule and is an open question.
+- **The Save-column rule is established for unmodified trees.** This
+  set's exports (two unmodified trees, one flat and one subdirectory
+  include) wrote the project file only. The first set's O-4 export —
+  into a fresh directory, with all four trees copied there flattened —
+  is **not explained** by the Save-column rule and remains an **open
+  question** (the include forms — parent-relative, absolute, deep
+  subdirectory — are the leading candidate for a second variable).
 - **Duplicate model declarations are legal and silent.** A project
-  and an included tree whose model blocks carry the
-  **byte-identical** same entry load with no dialog or warning; the
-  the entry shows once in the application, and a per-file save of
-  the tree **writes the entry exactly once** (it does not add the project's declaration)
-  entry, leaving the project file untouched.
+  and an included tree whose model blocks carry the **byte-identical**
+  entry load with no dialog or warning; the entry shows once in the
+  application, and a per-file save of the tree writes the entry
+  exactly once, leaving the project file untouched.
 
 ## A. Product & version archaeology
 

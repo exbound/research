@@ -16,7 +16,7 @@ it. This is the continuation of
 (O-10…O-16), which in turn continued
 [`groot2-o-answers.md`](groot2-o-answers.md) (O-1…O-9): **O-18 is
 answered here**; the exporter file-copy question the second
-set left NEEDS-MEASUREMENT, plus a **duplicate-model-declaration**
+set left NEEDS-MEASUREMENT is narrowed, plus a **duplicate-model-declaration**
 behavior measured alongside it.
 
 ---
@@ -90,7 +90,7 @@ byte-identical in all four):
 ```
 
 From the input (`dfeafb16…`): the version stamp **added**, the include
-order ascending on the written path (byte order; a two-include fixture cannot distinguish it from the dialog row order matching)
+order ascending on the written path (byte order; consistent with the first set's O-4 ascending basenames and the second set's sorted-on-write observation)
 rewritten **destination-relative** — the subdirectory segment
 **preserved** (`sub/tree-b.xml` keeps its `sub/` prefix; nothing is
 basename-flattened) — 4-space indent, and an empty
@@ -100,35 +100,25 @@ not change a single byte of it.
 
 **Answer 4 — the two prior sessions' results and the open question:**
 
-- The **first session's** "trees copied into the destination,
-  flattened to basenames" is consistent with the trees' source
-  paths **pointing at the destination directory at save time**: the
-  ticked save then lands the tree files where the includes point
-  (the destination), and the written includes read as bare basenames
-  relative to the project file beside them.
 - The **second session's** "project file only" is the **unmodified**
   case: nothing tickable, no in-place save triggered, project file
-  with repointed includes only.
+  with repointed includes only. This set's exports confirm it.
 - The **first session's** O-4 result (all four trees copied into a
   FRESH destination, flattened to basenames) is **not explained** by
   the Save-column rule — the sources could not have pointed at a
-  directory that did not exist, and its rows were ticked but O-18
-  shows a ticked dirty tree saves in place, not to the destination.
-  What differs is the include forms (parent-relative, absolute, deep
-  subdirectory). This is the open question.
+  directory that did not exist, and O-18 shows a ticked dirty tree
+  saves in place, not to the destination. What differs at least in
+  the include forms (parent-relative, absolute, deep subdirectory);
+  dirty state and the dialog's pre-filled destination are also
+  candidates. This is the open question.
 
-For this fixture set (two unmodified trees, one flat and one
-subdirectory include, no absolute or parent-relative paths), the
-exporter wrote the project file only. **HYPOTHESIS** (not
-established): the first session's copy-and-flatten result may be a
-second variable — possibly the absolute or parent-relative include
-forms, possibly dirty state in that session — not explained by the
-Save-column rule alone. The first set's O-4 in-place export (into
-the project's own directory, with subdirectory, parent-relative and
-absolute includes, producing flattened basenames and sibling copies)
-remains unexplained by this measurement. A deciding experiment would
-re-run the O-4 fixture set unmodified into a fresh directory, then
-with the absolute include removed.
+What O-18 establishes for this input: the Save column controls
+in-place saves, and unmodified trees produce project-file-only
+exports. What stays open: the first session's copy-and-flatten
+result (a fresh destination, all trees copied, basenames). The
+deciding experiment (O-18b) re-runs the first set's O-4 fixture
+unmodified into a fresh directory, then with the absolute include
+removed, then with the parent-relative include removed.
 
 **Answer 5 — the dialog's structure (as observed, all four exports):**
 
@@ -196,20 +186,18 @@ compatible writer does not add the project-declared model to the tree file on sa
 
 ## What this closes and what stays open
 
-- **Partially closes the second set's NEEDS-MEASUREMENT** on the exporter's
-  file-copy behavior: the copy-vs-project-only split is tree
-  dirtiness (the Save column's tick), the tick is an in-place save at
-  the include path, and the destination receives exactly the project
-  file. The first set's O-4 output (trees beside the destination,
-  basename includes) is the case where the trees' source paths point
-  at the destination. The unified exporter rule for spec §3.3 is
-  therefore: *write the project file; rewrite includes relative to
-  the destination (sorted, subpaths preserved); stamp it; append the
+- **Closes the second set's NEEDS-MEASUREMENT in part:** the Save
+  column's behavior (tick = in-place save at the include path) and
+  the project-file-only export for unmodified trees. For spec §3.3:
+  *write the project file; rewrite includes relative to the
+  destination (ascending, subpaths preserved); stamp it; append the
   project-level model list; and for every dirty tree, save it in
-  place at its include path.*
+  place at its include path.* The file-copy question (what triggers
+  the first session's copy-and-flatten) is **open**, pending O-18b.
 - **Still open from the earlier sets:** O-3 (V3 `TreeNodesModel`
-  rule, deferred to the later editing milestone) and O-7 (reconnect
-  back-off, non-blocking timing property).
+  rule, deferred to the later editing milestone), O-7 (reconnect
+  back-off, non-blocking timing property), and now O-18b (the
+  export file-copy variable).
 
 ---
 
