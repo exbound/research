@@ -38,8 +38,7 @@ the tree state at export time the only variable: (1) unmodified,
 unmodified, (4) one port of one tree modified and left dirty. Each
 destination directory was enumerated after its export.
 
-**The dialog (observed verbatim structure):** header "These files are
-included in the project. Select modified files to save:"; a two-column
+**The dialog (observed verbatim structure):** a header (paraphrased: the included files are listed and the modified ones selected for saving); a two-column
 table (`Save` | `File Name`) with one row per include — the
 **basenames** of both files, **in the reverse of the project file's
 include order** (`tree-b.xml` before `tree-a.xml`); a `Project Path`
@@ -91,7 +90,7 @@ byte-identical in all four):
 ```
 
 From the input (`dfeafb16…`): the version stamp **added**, the include
-order **reversed** (matching the dialog's row order), the includes
+order reversed (matching the dialog's row order; a two-include fixture cannot distinguish reversal from descending-path sort — both fit)
 rewritten **destination-relative** — the subdirectory segment
 **preserved** (`sub/tree-b.xml` keeps its `sub/` prefix; nothing is
 basename-flattened) — 4-space indent, and an empty
@@ -111,10 +110,18 @@ not change a single byte of it.
   case: nothing tickable, no in-place save triggered, project file
   with repointed includes only.
 
-There is **no copy-and-flatten operation** in the exporter. The
-variable was always **where the source trees lived relative to the
-export destination** (plus whether any tree was dirty enough to
-become tickable).
+For this fixture set (two unmodified trees, one flat and one
+subdirectory include, no absolute or parent-relative paths), the
+exporter wrote the project file only. **HYPOTHESIS** (not
+established): the first session's copy-and-flatten result may be a
+second variable — possibly the absolute or parent-relative include
+forms, possibly dirty state in that session — not explained by the
+Save-column rule alone. The first set's O-4 in-place export (into
+the project's own directory, with subdirectory, parent-relative and
+absolute includes, producing flattened basenames and sibling copies)
+remains unexplained by this measurement. A deciding experiment would
+re-run the O-4 fixture set unmodified into a fresh directory, then
+with the absolute include removed.
 
 **Answer 5 — the dialog's structure (as observed, all four exports):**
 
@@ -130,7 +137,7 @@ paragraph).
 **Incidents (recorded for future sessions):** confirming the export
 dialog while its Project Path field still held the pre-filled **input**
 path rewrote the input project file in place, with the reference's
-canonical rewrite of that file (stamp added, includes reversed, 4-
+canonical rewrite of that file (stamp added, include order changed, 4-
 space indent, model block appended) — hit three times before the
 Browse/OK button geometry was measured; the input was restored
 byte-exact each time and re-verified against the MANIFEST
@@ -160,7 +167,7 @@ whose **own** model block declares the **byte-identical** line
   warning, no error**. The model list showed the entry **once** (two
   byte-identical declarations did not produce two UI entries), and
   the `X` node instantiated in the canvas with no complaint.
-- **A per-file save of the tree deduplicates.** Dirtying the tree and
+- **A per-file save does not merge the project's declaration into the tree.** Dirtying the tree and
   saving it (project-tree panel, per-file Save) rewrote
   `tree-x.xml` to the published post-save bytes (`c1af551b…`,
   339 B): the written model block contains the entry **exactly
@@ -176,7 +183,7 @@ whose **own** model block declares the **byte-identical** line
 the project and its included trees is a **legal, silent** input; the
 reference merges it to a single model and a per-file save emits the
 entry once. A compatible loader must not refuse this input, and a
-compatible writer must deduplicate on save.
+compatible writer does not add the project-declared model to the tree file on save.
 
 ---
 

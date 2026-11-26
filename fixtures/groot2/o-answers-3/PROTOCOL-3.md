@@ -40,8 +40,8 @@ accepting that pre-fill exports onto the input tree (see
 
 **Dialog observed (verbatim structure, all four exports):**
 
-- Header: "These files are included in the project. Select modified
-  files to save:"
+- Header: the included files are listed; modified files are selected
+  for saving (paraphrased)
 - A two-column table, `Save` | `File Name`, one row per include. Both
   files' **basenames** appear; the row order is **tree-b.xml,
   tree-a.xml** — the **reverse** of the project file's include order
