@@ -46,7 +46,7 @@ bytes were re-derived at publication; re-derive any entry with
 - **All four `out-o18-*/proj.btproj` files are byte-identical**
   (hash `fc53554a…`): the destination always receives exactly the
   project file, with includes rewritten destination-relative, subdirectory
-  segment preserved, order reversed to the dialog's row order, the
+  segment preserved, order ascending on the written path, the
   version stamp added, and an empty `<TreeNodesModel/>` appended.
 - `o18-dupmodel/` — the duplicate-model experiment. `proj.btproj`
   declares the model `X` in its own `TreeNodesModel`; the included
@@ -54,7 +54,7 @@ bytes were re-derived at publication; re-derive any entry with
   (one `    <Action ID="X"/>` line in each file, same indentation).
   The reference loaded this silently — no dialog, no warning.
   `tree-x.xml` is the reference's own **post-save** bytes: the
-  duplicate was deduplicated to exactly one entry in the written model
+  duplicate was the entry written exactly once to exactly one entry in the written model
   block (`grep -c 'Action ID="X"'` → 1). The project file was untouched
   by the save and is published as authored.
 

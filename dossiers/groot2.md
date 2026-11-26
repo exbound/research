@@ -563,23 +563,21 @@ with the capture protocol; the findings record is at
   four tree states (unmodified, re-opened, canvas-opened, dirty)
   produced a **byte-identical** 289-byte project file
   (`fc53554a…`), includes rewritten destination-relative with the
-  subdirectory segment preserved, order reversed to the dialog's row
-  order.
-- **The two prior sessions' contradictory results resolve.** The
+  subdirectory segment preserved, order ascending on the written
+  path (which coincides with the dialog row order reversed from the input).
+- **The Save-column rule is established for unmodified trees.** The
   first set's O-4 (trees beside the destination, basename includes)
   is the case where the trees' source paths point **at** the
   destination at save time; the second set's project-file-only
   output is the unmodified case. There is **no
   copy-and-flatten operation** — the variable was always where the
   source trees lived relative to the destination. The second set's
-  exporter rule is now unified: write the project file, rewrite the
-  includes relative to the destination, stamp it, append the
-  project-level model list, and in-place save every dirty tree.
+  exporter wrote the project file only (for unmodified trees in this fixture set). The first session's O-4 export — into a fresh directory, with all four trees copied there flattened — remains unexplained by the Save-column rule and is an open question.
 - **Duplicate model declarations are legal and silent.** A project
   and an included tree whose model blocks carry the
   **byte-identical** same entry load with no dialog or warning; the
-  UI and XML preview show the entry once, and a per-file save of
-  the tree **deduplicates** the written model block to exactly one
+  the entry shows once in the application, and a per-file save of
+  the tree **writes the entry exactly once** (it does not add the project's declaration)
   entry, leaving the project file untouched.
 
 ## A. Product & version archaeology

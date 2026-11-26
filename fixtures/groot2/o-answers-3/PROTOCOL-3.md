@@ -57,7 +57,7 @@ before continuing:
 1. **Pre-filled-path exports.** Confirming the export dialog while its
    Project Path field still held the input's own path rewrote
    `in-o18-proj/proj.btproj` **in place** — the reference's canonical
-   rewrite of that file (version stamp added, includes reversed to the
+   rewrite of that file (version stamp added, include order ascending on the written path (coincides with the
    dialog's row order, 4-space indent, empty model block appended),
    156 → 259 bytes, no tree files written anywhere. This happened
    three times before the geometry below was measured; the input was

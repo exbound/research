@@ -15,13 +15,13 @@ it. This is the continuation of
 [`groot2-o-answers-2.md`](groot2-o-answers-2.md)
 (O-10…O-16), which in turn continued
 [`groot2-o-answers.md`](groot2-o-answers.md) (O-1…O-9): **O-18 is
-answered here**, closing the exporter file-copy question the second
+answered here**; the exporter file-copy question the second
 set left NEEDS-MEASUREMENT, plus a **duplicate-model-declaration**
 behavior measured alongside it.
 
 ---
 
-## O-18 — the export dialog's Save column and the file-copy question: **ESTABLISHED**
+## O-18 — the export dialog's Save column: **ESTABLISHED**; the file-copy question: **OPEN**
 
 **Question** (spec §3.3; carried open by the second set): the two
 prior recorded sessions disagree on what a project export writes —
@@ -38,7 +38,7 @@ the tree state at export time the only variable: (1) unmodified,
 unmodified, (4) one port of one tree modified and left dirty. Each
 destination directory was enumerated after its export.
 
-**The dialog (observed verbatim structure):** a header (paraphrased: the included files are listed and the modified ones selected for saving); a two-column
+**The dialog (observed structure):** a header (paraphrased: the included files are listed and the modified ones selected for saving); a two-column
 table (`Save` | `File Name`) with one row per include — the
 **basenames** of both files, **in the reverse of the project file's
 include order** (`tree-b.xml` before `tree-a.xml`); a `Project Path`
@@ -90,7 +90,7 @@ byte-identical in all four):
 ```
 
 From the input (`dfeafb16…`): the version stamp **added**, the include
-order reversed (matching the dialog's row order; a two-include fixture cannot distinguish reversal from descending-path sort — both fit)
+order ascending on the written path (byte order; a two-include fixture cannot distinguish it from the dialog row order matching)
 rewritten **destination-relative** — the subdirectory segment
 **preserved** (`sub/tree-b.xml` keeps its `sub/` prefix; nothing is
 basename-flattened) — 4-space indent, and an empty
@@ -98,7 +98,7 @@ basename-flattened) — 4-space indent, and an empty
 exporter include rule; the new fact is that the copy behavior does
 not change a single byte of it.
 
-**Answer 4 — the two prior sessions' contradictory results resolve:**
+**Answer 4 — the two prior sessions' results and the open question:**
 
 - The **first session's** "trees copied into the destination,
   flattened to basenames" is consistent with the trees' source
@@ -109,6 +109,13 @@ not change a single byte of it.
 - The **second session's** "project file only" is the **unmodified**
   case: nothing tickable, no in-place save triggered, project file
   with repointed includes only.
+- The **first session's** O-4 result (all four trees copied into a
+  FRESH destination, flattened to basenames) is **not explained** by
+  the Save-column rule — the sources could not have pointed at a
+  directory that did not exist, and its rows were ticked but O-18
+  shows a ticked dirty tree saves in place, not to the destination.
+  What differs is the include forms (parent-relative, absolute, deep
+  subdirectory). This is the open question.
 
 For this fixture set (two unmodified trees, one flat and one
 subdirectory include, no absolute or parent-relative paths), the
@@ -189,7 +196,7 @@ compatible writer does not add the project-declared model to the tree file on sa
 
 ## What this closes and what stays open
 
-- **Closes the second set's NEEDS-MEASUREMENT** on the exporter's
+- **Partially closes the second set's NEEDS-MEASUREMENT** on the exporter's
   file-copy behavior: the copy-vs-project-only split is tree
   dirtiness (the Save column's tick), the tick is an in-place save at
   the include path, and the destination receives exactly the project
