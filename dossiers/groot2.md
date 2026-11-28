@@ -570,8 +570,9 @@ with the capture protocol; the findings record is at
   include) wrote the project file only. The first set's O-4 export —
   into a fresh directory, with all four trees copied there flattened —
   is **not explained** by the Save-column rule and remains an **open
-  question** (the include forms — parent-relative, absolute, deep
-  subdirectory — are the leading candidate for a second variable).
+  question** (the sessions differ at least in the include
+  forms — parent-relative, absolute, deep subdirectory — with dirty
+  state and the pre-filled destination as additional candidates).
 - **Duplicate model declarations are legal and silent.** A project
   and an included tree whose model blocks carry the **byte-identical**
   entry load with no dialog or warning; the entry shows once in the

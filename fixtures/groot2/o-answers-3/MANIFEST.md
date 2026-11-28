@@ -64,6 +64,6 @@ bytes were re-derived at publication; re-derive any entry with
 - No capture-tooling or rigging details; the set stands on the
   input/output bytes and `PROTOCOL-3.md`.
 - The O-18 input hashes were re-verified after every export (the
-  in-place save incident of export #4 and the two in-place export
+  in-place save incident of export #4 and the three in-place export
   incidents of the `Browse`/`OK` geometry — see PROTOCOL-3.md — were
   each restored byte-exact against this manifest).

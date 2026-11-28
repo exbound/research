@@ -107,7 +107,7 @@ not change a single byte of it.
   FRESH destination, flattened to basenames) is **not explained** by
   the Save-column rule — the sources could not have pointed at a
   directory that did not exist, and O-18 shows a ticked dirty tree
-  saves in place, not to the destination. What differs at least in
+  saves in place, not to the destination. The sessions differ at least in
   the include forms (parent-relative, absolute, deep subdirectory);
   dirty state and the dialog's pre-filled destination are also
   candidates. This is the open question.
