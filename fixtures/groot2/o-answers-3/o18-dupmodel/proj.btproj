@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" project_name="DupModel">
+  <include path="tree-x.xml"/>
+  <TreeNodesModel>
+    <Action ID="X"/>
+  </TreeNodesModel>
+</root>

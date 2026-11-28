@@ -539,6 +539,87 @@ the first set's O-4 as the counter-example), and the recorded
 load-refusal behaviors — is at
 [`groot2-o-answers-2.md`](groot2-o-answers-2.md).
 
+### O-answers, third set — O-18 and the duplicate-model question (2026-11-25)
+
+The third session on Groot2 v1.10.0 PRO answered **O-18 (the
+exporter's file-copy behavior — the NEEDS-MEASUREMENT the second
+set left open)** and measured the **duplicate-model-declaration**
+behavior alongside it, on self-authored BT.CPP v4 inputs. The
+fixture set — inputs, the reference's own written outputs, and a
+full hash manifest — is published at
+[`fixtures/groot2/o-answers-3/`](../fixtures/groot2/o-answers-3/)
+with the capture protocol; the findings record is at
+[`groot2-o-answers-3.md`](groot2-o-answers-3.md).
+
+- **O-18 answered — the Save column is tree dirtiness.** The export
+  dialog's per-row Save state is driven entirely by whether the
+  tree is modified: an unmodified tree's row reads `n/a` with **no
+  control** (not settable by hand — mouse and keyboard both inert);
+  a dirty tree's row becomes a real checkbox, **ticked by default**.
+  The tick does **not** copy the tree into the export destination:
+  it saves the modified tree **in place at its include path**
+  (reference-canonical rewrite, version stamp included), and the
+  destination receives `proj.btproj` **only** — four exports with
+  four tree states (unmodified, re-opened, canvas-opened, dirty)
+  produced a **byte-identical** 289-byte project file
+  (`fc53554a…`), includes rewritten destination-relative with the
+  subdirectory segment preserved, order ascending on the written
+  path (which coincides with the dialog row order reversed from the input).
+- **The Save-column rule is established for unmodified trees.** This
+  set's exports (two unmodified trees, one flat and one subdirectory
+  include) wrote the project file only. The first set's O-4 export —
+  into a fresh directory, with all four trees copied there flattened —
+  is **not explained** by the Save-column rule and remains an **open
+  question** (the sessions differ at least in the include
+  forms — parent-relative, absolute, deep subdirectory — with dirty
+  state and the pre-filled destination as additional candidates).
+- **Duplicate model declarations are legal and silent.** A project
+  and an included tree whose model blocks carry the **byte-identical**
+  entry load with no dialog or warning; the entry shows once in the
+  application, and a per-file save of the tree writes the entry
+  exactly once, leaving the project file untouched.
+
+### O-answers, fourth set — O-18b: the include-form sweep (2026-11-28)
+
+The fourth session on Groot2 v1.10.0 PRO answered **O-18b — which
+include form, if any, triggers the first set's O-4 copy-and-flatten
+export result** — by re-running the first set's O-4 project
+unmodified into a fresh destination, then with the absolute include
+removed, then with both the absolute and parent-relative includes
+removed; the dialog was left at its default state throughout. The
+fixture set — three input variants, the reference's own written
+outputs, and a full hash manifest — is published at
+[`fixtures/groot2/o-answers-4/`](../fixtures/groot2/o-answers-4/)
+with the capture protocol; the findings record is at
+[`groot2-o-answers-4.md`](groot2-o-answers-4.md).
+
+- **O-18b answered — no include form triggers copy-and-flatten.**
+  Every destination in the sweep — the control (the third set's
+  `in-o18-proj/` project) and all three variants (all four include
+  forms; no absolute include; no absolute or parent-relative
+  include) — held **exactly one file**: the project file, and nothing
+  else. No tree file was copied to any destination, referenced or
+  not. The first set's O-4 copy-and-flatten result (five files at
+  the destination root, all basenames) is **not reproduced** by the
+  same project, unmodified, under these conditions: the include
+  forms are not the trigger.
+- **The project-file-only export rule is ESTABLISHED for unmodified
+  trees, across all include forms.** The written project file is the
+  reference's canonical rewrite in every case: 4-space indent,
+  `BTCPP_version="4.10"` stamp added, includes re-expressed
+  **destination-relative** with subdirectory segments **preserved**
+  (not flattened to basenames), ordered ascending on the written
+  path, an absolute include **re-expressed as a relative path**, and
+  an empty `<TreeNodesModel/>` appended. Files on disk beside the
+  project that are not referenced by any include are never copied.
+- **The first set's O-4 "always flattens to basename" claim is
+  superseded.** That result — all includes reduced to bare basenames,
+  every tree file copied beside the project — is a **dirty-state
+  artifact**, not a property of the include forms. What a ticked
+  (dirty-tree) export does to the **destination**, as distinct from
+  the in-place save the third set established for the same ticked
+  state, is the remaining open measurement.
+
 ## A. Product & version archaeology
 
 | Version | Released | Edition/modules | OS/arch | Notes | Status |
