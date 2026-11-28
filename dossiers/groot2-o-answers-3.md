@@ -66,6 +66,10 @@ canonicalized it in place — the port change committed, the version
 stamp added, the model block appended — which is what a reference-mode
 save of that tree produces at that location. The save target is
 **where the tree's include points**, not the export destination.
+*(The in-place-saved tree file itself was not published in this set:
+only the project files are, and the tree was restored to its
+pre-export bytes after the measurement. The in-place save is recorded
+in the findings record, not in the fixture set.)*
 
 **Answer 3 — all four exports produced a byte-identical project file:**
 
@@ -164,14 +168,17 @@ whose **own** model block declares the **byte-identical** line
   warning, no error**. The model list showed the entry **once** (two
   byte-identical declarations did not produce two UI entries), and
   the `X` node instantiated in the canvas with no complaint.
-- **A per-file save does not merge the project's declaration into the tree.** Dirtying the tree and
-  saving it (project-tree panel, per-file Save) rewrote
-  `tree-x.xml` to the published post-save bytes (`c1af551b…`,
-  339 B): the written model block contains the entry **exactly
-  once** — `grep -c 'Action ID="X"'` on the written file returns 1 —
-  with the port change committed and the version stamp added
-  (reference-normalized, 2-space body, same shape as the in-place
-  export save above).
+- **A per-file save does not add the project's declaration to the tree
+  file.** Dirtying the tree and saving it (project-tree panel,
+  per-file Save) rewrote `tree-x.xml` to the published post-save
+  bytes (`c1af551b…`, 339 B): the written model block contains the
+  entry **exactly once** — `grep -c 'Action ID="X"'` on the written
+  file returns 1 — with the port change committed and the version
+  stamp added (reference-normalized, 2-space body, same shape as the
+  in-place export save above). *(This measurement covers a single
+  byte-identical redeclaration; it does not establish how the writer
+  handles a plural or differing-input case, which is not measured in
+  this set.)*
 - **The project file is untouched by the tree save** —
   `proj.btproj` hash unchanged before and after
   (`55f46f98…`); the project's own declaration survives.

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" BTCPP_version="4.10" project_name="O18">
+    <include path="../../o-fixtures-3/in-o18-proj/sub/tree-b.xml"/>
+    <include path="../../o-fixtures-3/in-o18-proj/tree-a.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel/>
+</root>

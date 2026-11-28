@@ -213,6 +213,19 @@ regardless of the export destination directory. The included tree
 files are **copied beside the project**, normalized, every time the
 project is written.
 
+> **Forward note (2026-11-28):** this answer is **superseded** by the
+> O-18b measurement (fourth set, 2026-11-28, see
+> [`groot2-o-answers-4.md`](groot2-o-answers-4.md)): re-running this
+> project, unmodified, with all four include forms present, produced a
+> **project-file-only** export — no tree files copied, subdirectory
+> segments **preserved**, includes rewritten **destination-relative**
+> (not flattened to basenames). The copy-and-flatten result recorded
+> above is a **dirty-state artifact**, not a property of the include
+> forms. The established rule for unmodified trees is: write the
+> project file only; rewrite includes destination-relative with
+> subpaths preserved, ascending on the written path; stamp; append an
+> empty `<TreeNodesModel/>`; never copy unreferenced files.
+
 This **refines and corrects** the G-1 dossier finding ("relative to
 the saved file's own location — bare filename when saved alongside,
 relative path otherwise"): the reference **always** produces a bare

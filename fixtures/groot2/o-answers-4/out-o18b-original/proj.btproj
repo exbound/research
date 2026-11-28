@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root BTCPP_format="4" BTCPP_version="4.10" project_name="O4">
+    <include path="../in-original/deep/nest/tree2.xml"/>
+    <include path="../in-original/sub/tree.xml"/>
+    <include path="../outside.xml"/>
+    <include path="../../o-fixtures/in-o4-paths/abs.xml"/>
+    <!-- Description of Node Models (used by Groot) -->
+    <TreeNodesModel/>
+</root>
